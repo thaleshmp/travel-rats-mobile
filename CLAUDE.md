@@ -224,54 +224,110 @@ Cara **bem jovem**, nada sério. Comunicação **cheia de emojis**, ilustraçõe
 - Kit de ilustração / biblioteca de emojis-ícones.
 - Guia de estilo de copy.
 
-## Stack — recomendação inicial
+## Repositórios
 
-> Ainda não fechada, mas esta é a proposta de partida. Critério: time pequeno,
-> chegar rápido ao MVP, e ter **geoqueries de verdade** (spots perto de mim,
-> geofence do check-in) sem montar infra.
+O produto vive em **repositórios irmãos** dentro de `travel-rats/`:
 
-### Recomendado
-
-| Camada | Escolha | Por quê |
+| Repo | O que é | Conteúdo |
 | --- | --- | --- |
-| Mobile | **React Native + Expo** (EAS) | Um código p/ iOS+Android, módulos prontos de localização/mapa/push, OTA updates. |
-| Mapa | **react-native-maps** (Google no Android, Apple no iOS) ou **Mapbox** | Mapbox se quiser estilo custom combinando com a identidade jovem. **[em aberto]** |
-| Localização / geofence | `expo-location` + cálculo de raio no cliente, geofence nativo p/ background | Validação leve do check-in. |
-| Backend / DB | **Supabase** (Postgres + **PostGIS**) | Auth, Storage de fotos, Realtime e Edge Functions no mesmo lugar; PostGIS resolve as geoqueries. |
-| Auth | Supabase Auth (Apple, Google, e-mail) | Login social exigido nas lojas. |
-| Fotos | Supabase Storage (+ transform) ou **Cloudinary** | Upload, thumbnail, moderação. |
-| Lógica de servidor | Supabase Edge Functions (Deno) | Pontuação, "zerar cidade", check-ins patrocinados. Migrar p/ serviço Node (Fly.io/Railway) se crescer. |
-| Push | Expo Notifications (FCM + APNs) | — |
-| Assinatura premium | **RevenueCat** | Abstrai billing da App Store / Play; libera limites (check-ins/dia, roteiro colaborativo). |
-| Estado / dados no app | TanStack Query + Zustand | Cache, offline básico. |
-| Analytics | PostHog | Funil, feature flags. |
-| Erros | Sentry | RN + funções. |
-| Ferramenta de curadoria | Script TypeScript no mesmo Postgres; depois admin em **Next.js** (ou Retool) | Ver "Curadoria dos roteiros iniciais". |
-| Painel de parceiros (fase 2) | Next.js web no mesmo banco | Promoções, check-ins patrocinados. |
+| `mobile` (este) | O app Expo. | Telas, componentes, cliente Supabase, tipos gerados do banco. |
+| `travel-rats-supabase` | O projeto Supabase — **fonte de verdade do schema e das regras de negócio**. | `supabase/migrations/` (schema + RLS + triggers + funções SQL), `supabase/functions/` (Edge Functions em TS), `seed.sql`, `config.toml`, scripts de curadoria de roteiros. |
 
-### Alternativas consideradas
+Regra de ouro: **o mobile fala direto com o Supabase** (sem API própria no meio).
+Nada de lógica de negócio sensível no app — ela mora no `travel-rats-supabase`,
+como função Postgres/RPC ou Edge Function, protegida por RLS.
 
-- **Flutter** no lugar de RN: ótima performance de animação (bom p/ a identidade),
-  mas menos reuso com o web (admin/painel) e ecossistema de mapas/push um pouco
-  mais trabalhoso. Viável se o time preferir Dart.
-- **Firebase** no lugar de Supabase: mais simples no começo, mas geoquery é
-  contornada (geohash) e sem SQL/PostGIS — pior p/ "spots perto de mim" e para os
-  relatórios de parceiro.
-- **Backend próprio** (NestJS + Postgres): mais controle, mais tempo de setup.
-  Só se algum requisito furar o teto do Supabase.
+### Contrato entre os dois repos
+
+Sem API própria, o contrato é o schema + as assinaturas de RPC. Para manter o
+mobile em sincronia:
+
+- O `mobile` **commita** `src/types/database.types.ts`, gerado com
+  `supabase gen types typescript --linked` (script `pnpm gen:types`).
+- Regenerar sempre que o schema mudar no `travel-rats-supabase`. O CI do mobile
+  falha se o arquivo estiver desatualizado.
+
+Fase 2: **admin de curadoria** e **painel de parceiros** entram como repo(s)
+próprio(s) (Next.js), no mesmo banco.
+
+## Stack
+
+> Fechada para o MVP. Critério: time pequeno, chegar rápido ao MVP, ter
+> **geoqueries de verdade** (spots perto de mim, geofence do check-in) sem montar
+> infra, e um visual/feel no nível do Duolingo.
+
+| Camada | Escolha |
+| --- | --- |
+| App | **Expo (managed) + EAS**, **TypeScript strict**, **Expo Router** |
+| Arquitetura | Mobile → Supabase **direto**. Negócio em Edge Functions (TS) + RPC/funções Postgres. Autorização por **RLS**. |
+| Backend / DB | **Supabase**: Postgres + **PostGIS**, Auth, Storage, Realtime, Edge Functions — no repo `travel-rats-supabase` |
+| Auth | Supabase Auth (Apple, Google, e-mail) |
+| Fotos | **Supabase Storage** (+ image transform). Cloudinary só se moderação/transform apertar. |
+| Mapa | **react-native-maps** (Google no Android, Apple no iOS), isolado atrás de `components/map/` para troca futura por Mapbox |
+| Localização / geofence | `expo-location` + cálculo de raio no cliente; geofence nativo p/ background |
+| Estado servidor / cache | **TanStack Query** |
+| Estado local (UI) | **Zustand** |
+| Persistência local | **react-native-mmkv** (cache offline básico, sessão) |
+| Formulários / validação | **React Hook Form + Zod** |
+| Assinatura premium | **RevenueCat** (libera limites: check-ins/dia, roteiro colaborativo) |
+| Push | **expo-notifications** (FCM + APNs) |
+| Erros | **Sentry** (RN + Edge Functions) |
+| Analytics / feature flags | **PostHog** |
+| Estilo / UI | **Nativewind v4** + biblioteca própria pequena de componentes (design system estilo Duolingo) |
+| Animação / feel | **Reanimated 3** + **Moti** + **Lottie** (`lottie-react-native`) + **expo-haptics** + confete |
+| Tipografia | fonte display rounded bold via `expo-font` (candidatas: Baloo 2 / Nunito) |
+| Testes | **Jest + React Native Testing Library**; **Maestro** para o fluxo de check-in |
+| Lint / format | ESLint (config Expo) + Prettier + TypeScript strict |
+| CI | GitHub Actions: typecheck + lint + test + `gen:types` atualizado; builds via **EAS** |
+
+### Alternativas descartadas
+
+- **Flutter**: boa animação, mas menos reuso com o web (admin/parceiros) e
+  ecossistema de mapas/push mais trabalhoso.
+- **Firebase**: geoquery contornada por geohash, sem SQL/PostGIS — pior para
+  "spots perto de mim" e relatórios de parceiro.
+- **Backend próprio** (Hono/NestJS na frente do Supabase): mais controle, mais
+  infra. Caminho de saída se a lógica de negócio crescer além do confortável em
+  SQL + Edge Functions.
+- **Mapbox agora**: estilo custom combina com a identidade, mas custo por MAU e
+  integração mais chata com Expo. Adiado — o mapa fica isolado para trocar depois.
 
 ### Em aberto
 
-- Mapa: Google/Apple nativo vs. Mapbox (custo x identidade visual).
-- Onde mora a lógica pesada de pontuação (Edge Function vs. serviço dedicado).
-- Estratégia de offline (quanto do roteiro funciona sem rede em viagem).
-- Custos em escala (Places, Mapbox, Storage).
+- Migração para **Mapbox** (quando a identidade visual pesar mais que o custo).
+- Estratégia de **offline** — quanto do roteiro funciona sem rede em viagem.
+- Custos em escala (Storage de fotos, RevenueCat, curadoria/Places).
+- Onde rodam os **scripts de curadoria** (execução manual vs. agendada no Supabase).
+- Detalhes do design system estilo Duolingo (tokens, componentes, biblioteca de
+  ilustração) — ver "Identificação visual".
+
+## MVP
+
+**Em uma frase:** um checklist gamificado dos spots de **uma cidade**, com um
+caminho estilo jogo, check-in validado por GPS que rende pontos, e "zerar" a
+cidade pra virar a badge de ouro.
+
+MVP **lean**: loop central + caminho (versão simples, cards + linha), 1 cidade.
+Fora do MVP → fotos (v1.1), roteiros próprios + paywall premium (v1.2),
+amigos/social e 3D (v2).
+
+- Escopo detalhado: `docs/mvp.md`
+- Fases e prazo (~7–9 meses a 8h/sem até closed beta): `docs/roadmap.md`
+- Backlog de épicos/tarefas: `docs/backlog-inicial.md`
+
+## Gestão do projeto
+
+Tarefas no **Linear**, team `TR`. Dev solo, ~8h/semana. Setup e rotina:
+`docs/linear-setup.md`. Os itens `[em aberto]` deste documento viram issues
+`decision` no backlog.
 
 ## Próximos passos sugeridos
 
-1. Fechar o **MVP**: 1–2 cidades com roteiro pré-montado, check-in com GPS, pontos.
-2. Definir stack mobile + backend.
-3. Modelar entidades: Usuário, Cidade, Roteiro, Spot (com peso/obrigatório),
-   CheckIn, Foto, Amizade, Badge.
-4. Definir fonte de dados de POIs.
-5. Prototipar a tela de roteiro (mapa + checklist a partir do aeroporto).
+1. ~~Definir stack mobile + backend~~ — **feito** (`docs/adr/0001`).
+2. ~~Fechar escopo do MVP~~ — **feito** (`docs/mvp.md`, `docs/roadmap.md`).
+3. Montar o Linear a partir de `docs/backlog-inicial.md`.
+4. **E0 · Fundação**: criar `travel-rats-supabase` + projeto Supabase; scaffold do
+   Expo neste repo; CI nos dois; pipeline EAS até um build "hello world" no
+   TestFlight/Play.
+5. **E1 · Design system base** (tokens + componentes com feel Duolingo).
+6. Seguir os épicos E2→E8 na ordem do backlog.
