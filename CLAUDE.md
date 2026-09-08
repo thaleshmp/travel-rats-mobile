@@ -98,16 +98,19 @@ Completar os spots **obrigatórios** de um roteiro é **zerar** aquela cidade
 - **Parcerias** com turismo, hotéis e restaurantes: espaço para anúncios e promoções.
 
 ### Versão grátis
+
 - Máx. **3 check-ins por dia** *(número a revisar)*.
 - Só viaja **sozinho** (sem roteiro colaborativo).
 
 ### Versão premium
+
 - Check-ins ilimitados (ou limite bem maior).
 - Criar **roteiro com amigos** (colaborativo).
 
 ## Perfil do usuário — "cartão de visita"
 
 Página pública com:
+
 - Badges de países já visitados.
 - Eventos que participou.
 - **[em aberto]**: estatísticas (nº de cidades, spots, fotos), privacidade,
@@ -331,3 +334,5 @@ Tarefas no **Linear**, team `TR`. Dev solo, ~8h/semana. Setup e rotina:
    TestFlight/Play.
 5. **E1 · Design system base** (tokens + componentes com feel Duolingo).
 6. Seguir os épicos E2→E8 na ordem do backlog.
+
+@AGENTS.md
