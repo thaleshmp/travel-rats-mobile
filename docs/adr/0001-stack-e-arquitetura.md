@@ -56,7 +56,7 @@ nível do Duolingo.
   do schema e das regras.
 
 Sincronização de tipos: o `mobile` commita `src/types/database.types.ts`, gerado
-com `supabase gen types typescript --linked` (`pnpm gen:types`). Regenerar a cada
+com `supabase gen types typescript --linked` (`npm run gen:types`). Regenerar a cada
 mudança de schema; o CI do mobile falha se estiver desatualizado.
 
 **Alternativas consideradas.**

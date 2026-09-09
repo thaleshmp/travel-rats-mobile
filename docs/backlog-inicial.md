@@ -20,7 +20,7 @@ chega no TestFlight/Play. **De-riscar antes de qualquer feature.**
 | E0-3 | Scaffold Expo app: `create-expo-app` (TS), Expo Router, estrutura de pastas (`app/`, `src/components`, `src/lib`, `src/features`, `src/theme`) | M | mobile |
 | E0-4 | Config de qualidade: `tsconfig` strict, ESLint (config Expo) + Prettier, `lint`/`typecheck`/`test` scripts | S | infra |
 | E0-5 | `src/lib/supabase.ts` (cliente) + config de env via `app.config.ts` + `.env` + EAS secrets | S | mobile |
-| E0-6 | Script `pnpm gen:types` (`supabase gen types typescript --linked` → `src/types/database.types.ts`), commitar o arquivo | XS | infra |
+| E0-6 | Script `npm run gen:types` (`supabase gen types typescript --linked` → `src/types/database.types.ts`), commitar o arquivo | XS | infra |
 | E0-7 | GitHub Actions no `mobile`: typecheck + lint + test + checar `gen:types` atualizado | S | infra |
 | E0-8 | GitHub Actions no `travel-rats-supabase`: `supabase db lint` + testes pgTAP (esqueleto) | S | infra |
 | E0-9 | Projeto EAS, perfis `development`/`preview`/`production`, primeiro dev build iOS+Android | M | infra |
@@ -76,7 +76,7 @@ Pode andar em paralelo a E1/E2.
 | E3-6 | RLS: leitura de `cities`/`spots`/`itineraries` para usuário autenticado; escrita bloqueada (curadoria via service role) | S | supabase |
 | E3-7 | View/RPC `get_city_path(city_id)` — spots do preset em ordem, com flag obrigatório | S | supabase |
 | E3-8 | `seed.sql`: 1 cidade + ~12–15 spots **manual/placeholder** (troca pela curadoria depois) | M | curadoria |
-| E3-9 | `pnpm gen:types` + commit no `mobile` | XS | infra |
+| E3-9 | `npm run gen:types` + commit no `mobile` | XS | infra |
 
 ---
 

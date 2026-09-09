@@ -246,7 +246,7 @@ Sem API própria, o contrato é o schema + as assinaturas de RPC. Para manter o
 mobile em sincronia:
 
 - O `mobile` **commita** `src/types/database.types.ts`, gerado com
-  `supabase gen types typescript --linked` (script `pnpm gen:types`).
+  `supabase gen types typescript --linked` (script `npm run gen:types`).
 - Regenerar sempre que o schema mudar no `travel-rats-supabase`. O CI do mobile
   falha se o arquivo estiver desatualizado.
 
