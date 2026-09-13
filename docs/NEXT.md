@@ -1,7 +1,12 @@
 # Próxima ação
 
-**Fase 0** — marcar 3 blocos fixos no calendário para as próximas 4 semanas,
-escolher a testemunha, e escrever o critério de parada aqui embaixo.
+**Fase 1 · S2** — instalar Nativewind. Conferir na doc oficial se a v4 suporta
+RN 0.86 **antes** de instalar; depois `babel.config.js`, `metro.config.js`,
+`global.css`, `nativewind-env.d.ts`, e `import "../global.css"` no `_layout.tsx`.
+Rodar com `npx expo start --clear`. Pronto quando `<Text className="text-red-500">`
+sair vermelho.
+
+> ⚠️ Fase 0 ainda pendente: blocos no calendário, testemunha, critério de parada.
 
 ---
 
@@ -28,5 +33,3 @@ _(a preencher na Fase 0)_
 <!-- Os dias e horários que você marcou no calendário. -->
 
 _(a preencher na Fase 0)_
-
-Fase 1 · S2 — instalar Nativewind: conferir na doc oficial se a v4 suporta RN 0.86 antes de instalar; depois babel.config.js, metro.config.js, global.css, nativewind-env.d.ts, e import "../global.css" no _layout.tsx.

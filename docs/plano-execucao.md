@@ -51,30 +51,30 @@ celular** e que você mostra pra outra pessoa sem precisar explicar.
 > Demo: um botão no meu celular que responde tão bem quanto o do Duolingo.
 
 Dado o seu histórico, fluidez **não é polimento, é requisito funcional**. Esta
-fase existe para provar cedo que o app pode ter o feel certo.
+fase existe para provar cedo que o app pode ter o feel certo. Timebox: **6
+sessões** — estourou, congela e segue; o design system continua crescendo dentro
+das fases seguintes, não numa fase própria.
 
-- S1 — Limpar boilerplate (`app/(tabs)`, `modal.tsx`, `Themed.tsx`, `StyledText.tsx`,
-  `EditScreenInfo.tsx`, `constants/Colors.ts`); `_layout.tsx` vira `<Stack/>` puro
-- S2 — Nativewind rodando (babel + metro + `global.css` + `nativewind-env.d.ts`);
-  validar compatibilidade com RN 0.86 na doc antes; `expo start --clear`
-- S3 — Tokens de cor (cada cor com seu par `shade`) + fonte Baloo 2/Nunito
-- S4 — **O Button**: borda inferior sólida, afunda no press (Reanimated, ~40ms
-  descendo / ~80ms subindo), haptics no `onPressIn`
-- S5 — Rodar no celular físico (Expo Go) e ajustar até o toque parecer certo
-- S6 — Tela `app/design.tsx` como catálogo dos componentes
-
-Timebox: **6 sessões**. Estourou, congela e segue — o design system continua
-crescendo dentro das fases seguintes, não numa fase própria.
+| Sessão | Tarefa |
+| --- | --- |
+| ✅ S1 | Limpar boilerplate (`app/(tabs)`, `modal.tsx`, `Themed.tsx`, `StyledText.tsx`, `EditScreenInfo.tsx`, `constants/Colors.ts`); `_layout.tsx` vira `<Stack/>` puro |
+| S2 | Nativewind rodando (babel + metro + `global.css` + `nativewind-env.d.ts`); validar compatibilidade com RN 0.86 na doc antes; `expo start --clear` |
+| S3 | Tokens de cor (cada cor com seu par `shade`) + fonte Baloo 2/Nunito |
+| S4 | **O Button**: borda inferior sólida, afunda no press (Reanimated, ~40ms descendo / ~80ms subindo), haptics no `onPressIn` |
+| S5 | Rodar no celular físico (Expo Go) e ajustar até o toque parecer certo |
+| S6 | Tela `app/design.tsx` como catálogo dos componentes |
 
 ### Fase 2 · O caminho existe (semanas 3–4)
 > Demo: dá pra entender o app inteiro olhando a tela, sem eu explicar.
 
-- S1 — Escolher a cidade do MVP; array TS com 12 spots reais (nome, coord, peso)
-- S2 — A trilha vertical: cards + linha conectando, scroll
-- S3 — Estados visuais: bloqueado / disponível / concluído
-- S4 — Transição de entrada da tela (a fluidez importa aqui)
-- S5 — Tela de detalhe do spot + navegação
-- S6 — Sessão de atrito (ver regras)
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | Escolher a cidade do MVP; array TS com 12 spots reais (nome, coord, peso) |
+| S2 | A trilha vertical: cards + linha conectando, scroll |
+| S3 | Estados visuais: bloqueado / disponível / concluído |
+| S4 | Transição de entrada da tela (a fluidez importa aqui) |
+| S5 | Tela de detalhe do spot + navegação |
+| S6 | Sessão de atrito (ver regras) |
 
 ### Fase 3 · O loop funciona (semanas 5–6) ⬅ **marco decisivo**
 > Demo: eu faço check-in e dá vontade de fazer de novo.
@@ -82,56 +82,62 @@ crescendo dentro das fases seguintes, não numa fase própria.
 Sem banco, sem GPS, sem login. Estado em memória. Esta fase testa a hipótese
 central do produto pelo custo mais baixo possível.
 
-- S1 — Botão de check-in → card vira dourado
-- S2 — Confete (Lottie) + haptics + som
-- S3 — Barra de progresso da cidade (7/12)
-- S4 — "Zerar" → tela de badge de ouro
-- S5 — Polir o timing das animações até ficar gostoso
-- S6 — **Decisão go/no-go**: dar pra 3 pessoas brincarem. Se ninguém quiser fazer
-  o segundo check-in, o problema é o produto — e descobrir isso na semana 6 custa
-  6 semanas, não 8 meses.
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | Botão de check-in → card vira dourado |
+| S2 | Confete (Lottie) + haptics + som |
+| S3 | Barra de progresso da cidade (7/12) |
+| S4 | "Zerar" → tela de badge de ouro |
+| S5 | Polir o timing das animações até ficar gostoso |
+| S6 | **Go/no-go**: 3 pessoas brincam. Ninguém quer o segundo check-in? O problema é o produto — descobrir isso na semana 6 custa 6 semanas, não 8 meses |
 
 ### Fase 4 · Dados de verdade (semanas 7–8)
 > Demo: a tela é idêntica — mas agora vem do banco.
 
-- S1 — Schema `cities` / `spots` / `itineraries` (scripts + dump, como você decidiu)
-- S2 — Seed manual: 1 cidade, 12 spots
-- S3 — Cliente Supabase + env via `app.config.ts` + `.env` (nunca hardcoded)
-- S4 — TanStack Query + trocar o mock pelo fetch
-- S5 — Estados de loading/erro que não quebram o feel
-- S6 — **Teste de demanda** (trilha paralela, ver "Realidade")
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | Schema `cities` / `spots` / `itineraries` (scripts + dump, como você decidiu) |
+| S2 | Seed manual: 1 cidade, 12 spots |
+| S3 | Cliente Supabase + env via `app.config.ts` + `.env` (nunca hardcoded) |
+| S4 | TanStack Query — trocar o mock pelo fetch |
+| S5 | Estados de loading/erro que não quebram o feel |
+| S6 | **Teste de demanda**: landing page + 3 comunidades, meta 50 e-mails (ver "Realidade") |
 
 ### Fase 5 · Você tem conta (semanas 9–10)
 > Demo: desinstalo, reinstalo, e meu progresso volta.
 
-- S1 — Auth email/senha (login + signup)
-- S2 — Sessão persistente (MMKV) + `onAuthStateChange` no layout raiz
-- S3 — Tabela `check_ins` + RLS
-- S4 — Salvar check-in real e carregar progresso
-- S5 — Tela de perfil lendo `profiles`
-- S6 — Sessão de atrito
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | Auth email/senha (login + signup) |
+| S2 | Sessão persistente (MMKV) + `onAuthStateChange` no layout raiz |
+| S3 | Tabela `check_ins` + RLS |
+| S4 | Salvar check-in real e carregar progresso |
+| S5 | Tela de perfil lendo `profiles` |
+| S6 | Sessão de atrito |
 
 ### Fase 6 · GPS (semanas 11–12)
 > Demo: saio na rua e faço um check-in de verdade.
 
-- S1 — `expo-location` + fluxo de permissão
-- S2 — Validação de raio no cliente
-- S3 — **Modo dev "fingir que estou no spot"** — sem isso você não consegue
-  desenvolver de casa; é o item mais subestimado do projeto
-- S4 — RPC `do_checkin` no banco (validação server-side)
-- S5 — Estados de erro: GPS impreciso, offline, longe demais
-- S6 — Teste de campo real na cidade escolhida
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | `expo-location` + fluxo de permissão |
+| S2 | Validação de raio no cliente |
+| S3 | **Modo dev "fingir que estou no spot"** — sem isso você não consegue desenvolver de casa; é o item mais subestimado do projeto |
+| S4 | RPC `do_checkin` no banco (validação server-side) |
+| S5 | Estados de erro: GPS impreciso, offline, longe demais |
+| S6 | Teste de campo real na cidade escolhida |
 
 ### Fase 7 · Alguém que não é você (semanas 13–14)
 > Demo: 5 pessoas com o app instalado.
 
-- S1 — EAS build + TestFlight
-- S2 — Onboarding mínimo (3 telas)
-- S3 — Sentry + PostHog (saber o que acontece)
-- S4 — 5 pessoas instalam
-- S5 — **Assistir 2 delas usando, sem ajudar** — desconfortável e mais valioso
-  que qualquer métrica
-- S6 — Consolidar o que aprendeu e decidir a fase 8
+| Sessão | Tarefa |
+| --- | --- |
+| S1 | EAS build + TestFlight |
+| S2 | Onboarding mínimo (3 telas) |
+| S3 | Sentry + PostHog (saber o que acontece) |
+| S4 | 5 pessoas instalam |
+| S5 | **Assistir 2 delas usando, sem ajudar** — desconfortável e mais valioso que qualquer métrica |
+| S6 | Consolidar o que aprendeu e decidir a fase 8 |
 
 **Total: ~3,5 meses até usuário real** (contra 7–9 meses do roadmap atual).
 
