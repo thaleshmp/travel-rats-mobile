@@ -1,5 +1,5 @@
-import { Button } from '@/src/components/Button'
-import { ScrollView, Text, View } from 'react-native'
+import { Button } from '@/src/components/Button';
+import { ScrollView, Text, View } from 'react-native';
 
 export default function DesignScreen() {
     return (
@@ -21,7 +21,8 @@ export default function DesignScreen() {
                 <View className="h-8 bg-secondary" />
                 <View className="h-12 bg-destructive" />
             </View>
-        </ScrollView>
-    )
 
+            {/* resto do código */}
+        </ScrollView>
+    );
 }
