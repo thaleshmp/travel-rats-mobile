@@ -1,11 +1,24 @@
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { tokens } from '@/src/theme/tokens';
-import { TopBar } from '@/src/components/TopBar';
-import { MainCard } from '@/src/components/MainCard';
-import { Character } from '@/src/components/Character';
-import { TwoColumnCards } from '@/src/components/TwoColumnCards';
+import { AvatarWithStats } from '@/src/components/AvatarWithStats';
+import { ChallengeCard } from '@/src/components/ChallengeCard';
+import { CitiesGrid } from '@/src/components/CitiesGrid';
+import { QuickActions } from '@/src/components/QuickActions';
 import { BottomNav } from '@/src/components/BottomNav';
 import { useState } from 'react';
+
+const mockCities = [
+  { id: '1', name: 'Porto', emoji: '🌉', progress: 65, color: tokens.colors.accent1 },
+  { id: '2', name: 'Paris', emoji: '🗼', progress: 40, color: tokens.colors.accent2 },
+  { id: '3', name: 'Roma', emoji: '🏛️', progress: 20, color: '#3B82F6' },
+  { id: '4', name: 'Amsterdam', emoji: '🇳🇱', progress: 0, color: '#8B5CF6' },
+];
+
+const mockActions = [
+  { icon: '🗺️', label: 'Explorar nova cidade', color: tokens.colors.secondary, onPress: () => console.log('Explore') },
+  { icon: '🎯', label: 'Ver desafios diários', color: tokens.colors.accent1, onPress: () => console.log('Challenges') },
+  { icon: '👥', label: 'Convidar amigos', color: tokens.colors.accent2, onPress: () => console.log('Invite') },
+];
 
 export default function HomeScreen() {
   const [activeNav, setActiveNav] = useState(0);
@@ -14,70 +27,39 @@ export default function HomeScreen() {
     <View style={{ flex: 1, backgroundColor: tokens.colors.neutral[50] }}>
       <ScrollView
         contentContainerStyle={{
-          paddingTop: tokens.spacing.lg,
-          paddingBottom: 80, // espaço pra bottom nav
+          paddingBottom: 80,
         }}
       >
-        {/* Top Bar com stats */}
-        <TopBar points={660} streak={12} badges={5} />
-
-        {/* Level Badge */}
-        <View style={{ marginHorizontal: tokens.spacing.lg, marginBottom: tokens.spacing.lg }}>
-          <View
-            style={{
-              backgroundColor: tokens.colors.primary,
-              paddingHorizontal: tokens.spacing.lg,
-              paddingVertical: tokens.spacing.md,
-              borderRadius: tokens.borderRadius.xl,
-              alignSelf: 'flex-start',
-            }}
-          >
-            <Text
-              style={{
-                color: tokens.colors.white,
-                fontSize: tokens.typography.subheading.fontSize,
-                fontWeight: '700',
-                fontFamily: 'Baloo2',
-              }}
-            >
-              NÍVEL · 2
-            </Text>
-          </View>
-        </View>
-
-        {/* Main Card */}
-        <MainCard
-          icon="🌍"
-          title="Porto, Portugal"
-          subtitle="Explore a cidade"
-          primaryAction={{
-            label: 'Continuar Roteiro',
-            onPress: () => console.log('Continue'),
-          }}
-          secondaryAction={{
-            label: 'Ver Mapa',
-            onPress: () => console.log('Map'),
-          }}
+        {/* Avatar com stats */}
+        <AvatarWithStats
+          level={2}
+          points={660}
+          streak={12}
+          city="Porto"
+          progress={65}
+          onCityPress={() => console.log('City pressed')}
+          onRankingPress={() => console.log('Ranking pressed')}
+          onProgressPress={() => console.log('Progress pressed')}
         />
 
-        {/* Character */}
-        <Character size={120} emoji="🧭" />
-
-        {/* Two Column Cards */}
-        <TwoColumnCards
-          left={{
-            icon: '🏆',
-            title: 'Streak',
-            subtitle: 'Consistência é tudo',
-            color: tokens.colors.accent1,
-          }}
-          right={{
-            icon: '⭐',
-            title: 'Desafios',
-            subtitle: 'Complete e ganhe',
-            color: tokens.colors.accent2,
-          }}
+        {/* Challenge Card */}
+        <ChallengeCard
+          title="Explorador de Porto"
+          description="Visite 5 spots em Porto"
+          icon="🎯"
+          progress={60}
+          reward={250}
+          onPress={() => console.log('Challenge')}
         />
+
+        {/* Cities Grid */}
+        <CitiesGrid
+          cities={mockCities}
+          onCityPress={(cityId) => console.log('City:', cityId)}
+        />
+
+        {/* Quick Actions */}
+        <QuickActions actions={mockActions} />
       </ScrollView>
 
       {/* Bottom Nav */}
