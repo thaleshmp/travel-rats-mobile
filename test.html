@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roteiro - Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background: #FFFBEB;
+            display: flex;
+            flex-direction: column;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 44px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .header-flags {
+            display: flex;
+            gap: 8px;
+            font-size: 16px;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Card */
+        .card {
+            background: #58CC02;
+            margin: 16px;
+            padding: 16px;
+            border-radius: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-text h3 {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .card-text p {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .avatar-area {
+            position: relative;
+            width: 260px;
+            height: 320px;
+        }
+
+        .avatar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: #58CC02;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            z-index: 10;
+        }
+
+        .btn {
+            position: absolute;
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-free {
+            background: #58CC02;
+            color: white;
+        }
+
+        .btn-locked {
+            background: #BFDBFE;
+            color: #1E40AF;
+        }
+
+        .btn-top-left { top: 0; left: 0; }
+        .btn-top-right { top: 0; right: 0; }
+        .btn-mid-left { top: 50%; left: 0; transform: translateY(-50%); }
+        .btn-mid-right { top: 50%; right: 0; transform: translateY(-50%); }
+        .btn-bot-left { bottom: 0; left: 0; }
+        .btn-bot-right { bottom: 0; right: 0; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            height: 70px;
+            background: white;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .nav-1 { background: #FFA500; }
+        .nav-2 { background: #3B82F6; }
+        .nav-3 { background: #CD853F; }
+        .nav-4 { background: #A855F7; }
+        .nav-5 { background: #C084FC; }
+    </style>
+</head>
+<body>
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 📡 🔋</span>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-flags">
+            <span>🇫🇷</span>
+            <span>⭐</span>
+            <span>💚 605</span>
+        </div>
+        <div class="header-stats">
+            <span>❤️</span>
+        </div>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+        <div class="card-text">
+            <h3>Section 1 Level 1</h3>
+            <p>Use basic phrases</p>
+        </div>
+        <div class="card-icon">✅</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div class="avatar-area">
+            <!-- Avatar -->
+            <div class="avatar">🧭</div>
+
+            <!-- Buttons -->
+            <div class="btn btn-free btn-top-left">▶️</div>
+            <div class="btn btn-locked btn-top-right">🔒</div>
+            <div class="btn btn-free btn-mid-left">▶️</div>
+            <div class="btn btn-locked btn-mid-right">🔒</div>
+            <div class="btn btn-free btn-bot-left">▶️</div>
+            <div class="btn btn-locked btn-bot-right">🔒</div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-btn nav-1">🏠</div>
+        <div class="nav-btn nav-2">📍</div>
+        <div class="nav-btn nav-3">🎯</div>
+        <div class="nav-btn nav-4">⭐</div>
+        <div class="nav-btn nav-5">⚙️</div>
+    </div>
+</body>
+</html>

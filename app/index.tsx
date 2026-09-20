@@ -1,9 +1,9 @@
-import HowToPlayScreen from './howtoplay';
+import { View, Text } from 'react-native';
 
-export default HowToPlayScreen;
-
-// import HomeScreen from './home';
-// export default HomeScreen;
-
-// import BadgesScreen from "./badges";
-// export default BadgesScreen;
+export default function HomeScreen() {
+  return (
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+      <Text>Home</Text>
+    </View>
+  );
+}
