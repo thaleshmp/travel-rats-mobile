@@ -1,10 +1,10 @@
 # Próxima ação
 
-**Fase 1 · S2** — instalar Nativewind. Conferir na doc oficial se a v4 suporta
-RN 0.86 **antes** de instalar; depois `babel.config.js`, `metro.config.js`,
-`global.css`, `nativewind-env.d.ts`, e `import "../global.css"` no `_layout.tsx`.
-Rodar com `npx expo start --clear`. Pronto quando `<Text className="text-red-500">`
-sair vermelho.
+**Foundation 01 implementada.** Revisar a direção visual da home em
+`src/features/home/HomeScreen.tsx` com o usuário e testar em iOS/Android reais.
+Paleta e medidas: `src/design-system/tokens.ts`. Componentes:
+`src/design-system/components.tsx`. Referências e regras: `docs/design-system.md`.
+Depois da revisão, evoluir o roteiro a partir dos painéis de demonstração.
 
 > ⚠️ Fase 0 ainda pendente: blocos no calendário, testemunha, critério de parada.
 
