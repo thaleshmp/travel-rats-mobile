@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import { useWardrobe } from '../shop/WardrobeProvider';
-import { appearance } from '../shop/catalog';
 import { useRouter } from 'expo-router';
-import { spots, visited } from '../itinerary/demo';
+import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
@@ -11,6 +8,9 @@ import { Traveler } from '../../components/illustrations/Traveler';
 import { Button, Label, OrbitButton, Progress, Surface, Tactile } from '../../design-system/components';
 import { Icon } from '../../design-system/Icon';
 import { colors, fonts, radius, space } from '../../design-system/tokens';
+import { spots, visited } from '../itinerary/demo';
+import { appearance } from '../shop/catalog';
+import { useWardrobe } from '../shop/WardrobeProvider';
 
 type Panel = 'spots' | 'passport' | 'style' | 'city';
 const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera' };
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   page: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingHorizontal: space.xl, paddingTop: space.lg, paddingBottom: space.xl },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: space.sm },
   brand: { flexDirection: 'row', alignItems: 'center', gap: space.sm }, brandMark: { backgroundColor: colors.lavender, borderRadius: 11, padding: 8 },
-  wordmark: { fontFamily: fonts.display, fontSize: 26, letterSpacing: -0.8 },
+  wordmark: { fontFamily: fonts.display, fontSize: 26, lineHeight: 40, letterSpacing: -0.8, includeFontPadding: false, textAlignVertical: 'center' },
   points: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.gold }, pointsText: { fontFamily: fonts.bold, color: colors.goldInk, fontSize: 14 },
   intro: { alignItems: 'center', marginTop: space.xl },
   cityChip: { flexDirection: 'row', gap: 6, borderWidth: 0, borderBottomWidth: 0, minHeight: 44, paddingHorizontal: 10 },
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   bubbleTip: { position: 'absolute', height: 10, width: 10, backgroundColor: colors.surface, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, bottom: -6, left: 30, transform: [{ rotate: '45deg' }] },
   orbitLeft: { position: 'absolute', left: 0, top: 58, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 58, gap: 65 },
   compactOrbit: { position: 'relative', top: 0, flexDirection: 'row', gap: space.xl },
-  shopShortcut: { flexDirection: 'row', gap: space.lg, alignItems: 'center', marginTop: space.md },
+  shopShortcut: { flexDirection: 'row', gap: space.lg, alignItems: 'center', marginTop: space.lg, padding: space.lg, backgroundColor: colors.peach, borderColor: colors.peachEdge },
   adventureHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: space.lg, marginBottom: space.md },
   demo: { fontSize: 10, color: colors.muted, backgroundColor: colors.line, borderRadius: 5, paddingHorizontal: 6 },
   adventure: { padding: space.lg }, cardHeading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.lg },

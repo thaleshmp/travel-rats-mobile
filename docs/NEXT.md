@@ -33,3 +33,7 @@ _(a preencher na Fase 0)_
 <!-- Os dias e horários que você marcou no calendário. -->
 
 _(a preencher na Fase 0)_
+
+## Reminders
+
+- Trocar o conceito de 'lojinha' por 'duty free'
