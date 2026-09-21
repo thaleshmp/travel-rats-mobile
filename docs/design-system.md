@@ -43,3 +43,15 @@ A navegação definitiva, personalização persistente, dados reais, demais esta
 `app/roteiro.tsx` abre `src/features/itinerary/ItineraryScreen.tsx`. Os dois acessos da home (Roteiro e Continuar aventura) usam navegação do Expo Router. A tela oferece três capítulos, histórico recolhível, próxima parada em lilás, cards conectados por uma linha vertical e recompensa final. Os futuros spots continuam consultáveis, sem bloquear a exploração pela ordem sugerida.
 
 Home e roteiro compartilham fixtures em `src/features/itinerary/demo.ts`. Cada card abre um painel de detalhes, distinguindo visitado e a explorar. Não há alteração de pontos ou check-in simulado. A ilustração `Lisbon.tsx` é um cartão-postal decorativo da cidade, não um mapa nem uma representação de cada monumento.
+
+## Loja e guarda-roupa
+
+`app/loja.tsx` abre o catálogo em `src/features/shop/ShopScreen.tsx`. A home ganha o quinto atalho, Loja. O provador permite visualizar qualquer item sem mudar o avatar salvo; comprar/resgatar e equipar são ações separadas. Descobrir mostra itens ainda não adquiridos, Conquistas mostra recompensas de viagem e Meus itens reúne o inventário.
+
+`catalog.ts` mantém regras independentes da interface: visita (primeiro check-in), progresso de cidade (spots obrigatórios) e progresso de país (cidades concluídas do catálogo). Completar Paris libera a boina parisiense; 50% de Lisboa libera o boné dos miradouros; 50%/100% das cidades de Portugal liberam chapéu/mochila. As recompensas de conquista são gratuitas após o desbloqueio. Outros itens custam pontos de demonstração. Preços, catálogo de países e percentuais são decisões de protótipo.
+
+`WardrobeProvider.tsx` compartilha saldo, inventário e equipamentos entre home e loja durante a sessão. Recarregar o app restaura a demonstração. O saldo disponível na home acompanha as compras; os pontos históricos do passaporte continuam sendo os pontos conquistados. A prévia de Portugal usa quatro cidades de exemplo, nenhuma concluída, com visita já realizada em Lisboa.
+
+Antes de produção: persistência vinculada à conta, compras atômicas e idempotentes no backend, desbloqueios calculados com check-ins validados e política para mudanças no catálogo de cidades. Os cálculos locais não são autorização de compra ou de conquista. Não há dinheiro real nem integração de pagamento nesta tela.
+
+Validação das regras: `npm run test:shop` (Node com suporte a type stripping).

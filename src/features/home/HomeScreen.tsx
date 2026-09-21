@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useWardrobe } from '../shop/WardrobeProvider';
+import { appearance } from '../shop/catalog';
 import { useRouter } from 'expo-router';
 import { spots, visited } from '../itinerary/demo';
 import { Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -11,12 +13,14 @@ import { colors, fonts, radius, space } from '../../design-system/tokens';
 
 type Panel = 'spots' | 'passport' | 'style' | 'city';
 const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera' };
-const outfits = [ { name: 'Uva', color: colors.violet }, { name: 'Floresta', color: '#397326' }, { name: 'Terracota', color: '#C16840' } ];
+const outfits = [ { id: 'uva', name: 'Uva', color: colors.violet }, { id: 'forest', name: 'Floresta', color: '#397326' }, { id: 'terra', name: 'Terracota', color: '#C16840' } ];
 
 export default function HomeScreen() {
   const router = useRouter();
   const [panel, setPanel] = useState<Panel | null>(null);
-  const [shirt, setShirt] = useState<string>(colors.violet);
+  const { wardrobe, equipItem } = useWardrobe();
+  const look = appearance(wardrobe);
+  const shirt = look.shirt;
   const { width, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const compact = width < 360 || fontScale > 1.2;
@@ -26,7 +30,7 @@ export default function HomeScreen() {
     <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View style={styles.brand}><View style={styles.brandMark}><Icon name="route" size={21} color={colors.violet} /></View><Label style={styles.wordmark}>travel rats<Label style={{ color: colors.violet }}>.</Label></Label></View>
-        <View style={styles.points} accessibilityLabel="400 pontos de exemplo"><Icon name="star" color={colors.goldInk} size={16} /><Label style={styles.pointsText}>400</Label></View>
+        <View style={styles.points} accessibilityLabel={`Saldo: ${wardrobe.balance} pontos de demonstração`}><Icon name="star" color={colors.goldInk} size={16} /><Label style={styles.pointsText}>{wardrobe.balance}</Label></View>
       </View>
 
       <View style={styles.intro}>
@@ -46,9 +50,9 @@ export default function HomeScreen() {
             <Circle cx={43} cy={179} r={4} fill="#CBB8E8" /><Circle cx={258} cy={52} r={4} fill="#A8CC83" />
           </Svg>
         </View>
-        <View style={styles.character} accessible accessibilityLabel="Seu avatar: um ratinho viajante de boné verde e mochila amarela">
+        <View style={styles.character} accessible accessibilityLabel="Seu avatar: um ratinho viajante com os acessórios equipados">
           <View style={styles.bubble}><Label variant="small" style={{ fontFamily: fonts.bold }}>Partiu explorar?</Label><View style={styles.bubbleTip} /></View>
-          <Traveler size={compact ? 175 : 205} shirt={shirt} />
+          <Traveler size={compact ? 175 : 205} {...look} />
         </View>
         <View style={[styles.orbitLeft, compact && styles.compactOrbit]}>
           <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => router.push('/roteiro')} />
@@ -58,6 +62,11 @@ export default function HomeScreen() {
           <OrbitButton label="Spots" icon="pin" tone="peach" onPress={() => setPanel('spots')} />
           <OrbitButton label="Meu estilo" icon="shirt" tone="violet" onPress={() => setPanel('style')} />
         </View>
+      </View>
+
+      <View style={styles.shopShortcut}>
+        <OrbitButton label="Loja" icon="store" tone="peach" onPress={() => router.push('/loja')} />
+        <View style={{ flex: 1 }}><Label style={{ fontFamily: fonts.bold }}>Seu próximo souvenir</Label><Label variant="small" style={{ color: colors.muted }}>Vista as histórias que você vive.</Label></View>
       </View>
 
       <View style={styles.adventureHeading}><Label variant="eyebrow" style={{ color: colors.muted }}>SUA AVENTURA ATUAL</Label><Label variant="small" style={styles.demo}>Prévia</Label></View>
@@ -95,9 +104,10 @@ export default function HomeScreen() {
             </>}
             {panel === 'style' && <>
               <Label style={styles.muted}>Escolha a camiseta do seu companheiro de viagem.</Label>
-              <View style={{ alignItems: 'center' }}><Traveler size={185} shirt={shirt} /></View>
-              <View style={styles.swatches}>{outfits.map((outfit) => <Tactile key={outfit.name} onPress={() => setShirt(outfit.color)} accessibilityLabel={`Camiseta ${outfit.name}`} accessibilityState={{ selected: shirt === outfit.color }} style={[styles.swatch, { borderColor: shirt === outfit.color ? colors.violet : colors.line }]}><View style={[styles.colorDot, { backgroundColor: outfit.color }]}>{shirt === outfit.color && <Icon name="check" color="white" size={21} />}</View><Label variant="small">{outfit.name}</Label></Tactile>)}</View>
+              <View style={{ alignItems: 'center' }}><Traveler size={185} {...look} /></View>
+              <View style={styles.swatches}>{outfits.map((outfit) => <Tactile key={outfit.name} onPress={() => equipItem(outfit.id)} accessibilityLabel={`Camiseta ${outfit.name}`} accessibilityState={{ selected: shirt === outfit.color }} style={[styles.swatch, { borderColor: shirt === outfit.color ? colors.violet : colors.line }]}><View style={[styles.colorDot, { backgroundColor: outfit.color }]}>{shirt === outfit.color && <Icon name="check" color="white" size={21} />}</View><Label variant="small">{outfit.name}</Label></Tactile>)}</View>
               <Button onPress={close} icon="check">Pronto para explorar</Button>
+              <Button secondary icon="store" onPress={() => { close(); router.push('/loja'); }}>Ver meu guarda-roupa</Button>
             </>}
             {panel === 'city' && <><Label style={styles.muted}>Nossa primeira aventura começa em Lisboa.</Label><Surface style={{ gap: space.md }}><Label variant="heading">Lisboa, Portugal</Label><Label>12 spots. Muitas histórias pelo caminho.</Label><Button onPress={close} icon="check">Explorar Lisboa</Button></Surface><Label variant="small" style={styles.muted}>Novas cidades chegam nas próximas aventuras.</Label></>}
           </ScrollView>
@@ -126,6 +136,7 @@ const styles = StyleSheet.create({
   bubbleTip: { position: 'absolute', height: 10, width: 10, backgroundColor: colors.surface, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, bottom: -6, left: 30, transform: [{ rotate: '45deg' }] },
   orbitLeft: { position: 'absolute', left: 0, top: 58, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 58, gap: 65 },
   compactOrbit: { position: 'relative', top: 0, flexDirection: 'row', gap: space.xl },
+  shopShortcut: { flexDirection: 'row', gap: space.lg, alignItems: 'center', marginTop: space.md },
   adventureHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: space.lg, marginBottom: space.md },
   demo: { fontSize: 10, color: colors.muted, backgroundColor: colors.line, borderRadius: 5, paddingHorizontal: 6 },
   adventure: { padding: space.lg }, cardHeading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.lg },

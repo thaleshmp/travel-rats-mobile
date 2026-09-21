@@ -1,9 +1,10 @@
 # Próxima ação
 
-**Roteiro implementado.** Revisar `src/features/itinerary/ItineraryScreen.tsx`
-com o usuário e validar em iOS/Android reais. Home e roteiro compartilham os
-spots de exemplo em `src/features/itinerary/demo.ts`. Próximo passo: evoluir o
-detalhe de spot com dados curados e mini-mapa, antes de integrar check-in por GPS.
+**Loja e guarda-roupa implementados.** Revisar `src/features/shop/ShopScreen.tsx`
+e as regras em `src/features/shop/catalog.ts`. A demonstração compartilha saldo e
+itens equipados com a home durante a sessão. Próximo passo: validar preços,
+critérios de conquistas e persistência da conta antes de integrar compras e
+check-ins reais. Testar o fluxo em aparelhos iOS/Android.
 
 > ⚠️ Fase 0 ainda pendente: blocos no calendário, testemunha, critério de parada.
 

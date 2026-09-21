@@ -8,6 +8,7 @@ import { Baloo2_700Bold } from '@expo-google-fonts/baloo-2/700Bold';
 import { Nunito_600SemiBold } from '@expo-google-fonts/nunito/600SemiBold';
 import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold';
 import { colors } from '../src/design-system/tokens';
+import { WardrobeProvider } from '../src/features/shop/WardrobeProvider';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -22,7 +23,7 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }} />
+      <WardrobeProvider><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.canvas } }} /></WardrobeProvider>
     </>
   );
 }
