@@ -12,8 +12,8 @@ import { spots, visited } from '../itinerary/demo';
 import { appearance } from '../shop/catalog';
 import { useWardrobe } from '../shop/WardrobeProvider';
 
-type Panel = 'spots' | 'passport' | 'style' | 'city';
-const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera' };
+type Panel = 'spots' | 'passport' | 'style' | 'city' | 'checkin';
+const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera', checkin: 'Check-in' };
 const outfits = [ { id: 'uva', name: 'Uva', color: colors.violet }, { id: 'forest', name: 'Floresta', color: '#397326' }, { id: 'terra', name: 'Terracota', color: '#C16840' } ];
 
 export default function HomeScreen() {
@@ -54,6 +54,9 @@ export default function HomeScreen() {
         <View style={styles.character}>
           <View style={styles.bubble}><Label variant="small" style={{ fontFamily: fonts.bold }}>Partiu explorar?</Label><View style={styles.bubbleTip} /></View>
           <AnimatedTraveler size={compact ? 175 : 205} active={panel === null} {...look} />
+          <View style={styles.checkinRow}>
+            <OrbitButton label="Check-in" icon="pin-check" tone="red" onPress={() => setPanel('checkin')} />
+          </View>
         </View>
         <View style={[styles.orbitLeft, compact && styles.compactOrbit]}>
           <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => router.push('/roteiro')} />
@@ -111,6 +114,7 @@ export default function HomeScreen() {
               <Button secondary icon="store" onPress={() => { close(); router.push('/loja'); }}>Ver meu guarda-roupa</Button>
             </>}
             {panel === 'city' && <><Label style={styles.muted}>Nossa primeira aventura começa em Lisboa.</Label><Surface style={{ gap: space.md }}><Label variant="heading">Lisboa, Portugal</Label><Label>12 spots. Muitas histórias pelo caminho.</Label><Button onPress={close} icon="check">Explorar Lisboa</Button></Surface><Label variant="small" style={styles.muted}>Novas cidades chegam nas próximas aventuras.</Label></>}
+            {panel === 'checkin' && <Label style={styles.muted}>Em breve.</Label>}
           </ScrollView>
         </View>
       </View>
@@ -129,7 +133,8 @@ const styles = StyleSheet.create({
   cityChip: { flexDirection: 'row', gap: 6, borderWidth: 0, borderBottomWidth: 0, minHeight: 44, paddingHorizontal: 10 },
   cityText: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 1.4, color: colors.violet },
   title: { textAlign: 'center', marginTop: space.xs, fontSize: 30, lineHeight: 36 }, subtitle: { color: colors.muted, marginTop: space.xs },
-  playground: { height: 330, marginTop: space.sm, justifyContent: 'center', alignItems: 'center' },
+  playground: { height: 400, marginTop: space.sm, justifyContent: 'center', alignItems: 'center' },
+  checkinRow: { marginTop: space.md, transform: [{ scale: 1.25 }], shadowColor: colors.redInk, shadowOpacity: 0.35, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 6 },
   compactPlayground: { height: 'auto', paddingTop: space.lg, gap: space.lg },
   orbitArtwork: { pointerEvents: 'none', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
   character: { alignItems: 'center', marginTop: -40 },

@@ -1,6 +1,6 @@
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { colors } from './tokens';
-export type IconName = 'store' | 'lock' | 'route' | 'pin' | 'passport' | 'shirt' | 'star' | 'arrow' | 'close' | 'check' | 'chevron';
+export type IconName = 'store' | 'lock' | 'route' | 'pin' | 'passport' | 'shirt' | 'star' | 'arrow' | 'close' | 'check' | 'chevron' | 'pin-check';
 export function Icon({ name, size = 24, color = colors.ink }: { name: IconName; size?: number; color?: string }) {
   return <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden={true}>
     {name === 'store' && <><Path d="M3 10v11h18V10M2 10l2-7h16l2 7M2 10q3 5 6 0 4 5 8 0 3 5 6 0M8 10l1-7m7 7-1-7" /><Path d="M9 21v-6h6v6" /></>}
@@ -14,5 +14,6 @@ export function Icon({ name, size = 24, color = colors.ink }: { name: IconName; 
     {name === 'close' && <Path d="m6 6 12 12M6 18 18 6" />}
     {name === 'check' && <Path d="m5 12 4 4L19 6" />}
     {name === 'chevron' && <Path d="m9 5 7 7-7 7" />}
+    {name === 'pin-check' && <><Path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" /><Path d="m9 10 2 2 4-4" /></>}
   </Svg>;
 }

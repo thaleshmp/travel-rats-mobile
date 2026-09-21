@@ -6,6 +6,7 @@ export const colors = {
   peach: '#FFE9D7', peachInk: '#AE5629', peachEdge: '#F3C9A6',
   gold: '#FFF1BB', goldInk: '#906417', goldEdge: '#E8D18C',
   violetEdge: '#D1BDED', progress: '#82BE50',
+  red: '#FFD9D9', redInk: '#B23B3B', redEdge: '#F0A8A8',
 } as const;
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48 } as const;
 export const radius = { sm: 12, md: 18, lg: 24, pill: 999 } as const;
@@ -15,5 +16,6 @@ export const tones = {
   green: { fill: colors.green, ink: colors.greenInk, edge: colors.greenEdge },
   peach: { fill: colors.peach, ink: colors.peachInk, edge: colors.peachEdge },
   gold: { fill: colors.gold, ink: colors.goldInk, edge: colors.goldEdge },
+  red: { fill: colors.red, ink: colors.redInk, edge: colors.redEdge },
 } as const;
 export type Tone = keyof typeof tones;
