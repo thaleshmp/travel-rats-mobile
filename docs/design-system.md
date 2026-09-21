@@ -37,3 +37,9 @@ Ações têm alvo mínimo de 48 px, resposta de pressão e haptic de seleção q
 `src/features/home/HomeScreen.tsx` reúne marca, cidade, saudação, avatar com quatro atalhos e card da aventura atual. Os atalhos abrem painéis fecháveis pelo botão, fundo ou retorno do Android. Meu estilo altera a camiseta durante a sessão. Progresso, cidade e pontos são fixtures identificadas como prévia; nenhuma ação simula check-in real.
 
 A navegação definitiva, personalização persistente, dados reais, demais estados de tela e validação com VoiceOver/TalkBack ficam para a integração de produto. Validar iOS e Android reais antes do beta.
+
+## Tela de roteiro
+
+`app/roteiro.tsx` abre `src/features/itinerary/ItineraryScreen.tsx`. Os dois acessos da home (Roteiro e Continuar aventura) usam navegação do Expo Router. A tela oferece três capítulos, histórico recolhível, próxima parada em lilás, cards conectados por uma linha vertical e recompensa final. Os futuros spots continuam consultáveis, sem bloquear a exploração pela ordem sugerida.
+
+Home e roteiro compartilham fixtures em `src/features/itinerary/demo.ts`. Cada card abre um painel de detalhes, distinguindo visitado e a explorar. Não há alteração de pontos ou check-in simulado. A ilustração `Lisbon.tsx` é um cartão-postal decorativo da cidade, não um mapa nem uma representação de cada monumento.

@@ -1,10 +1,9 @@
 # Próxima ação
 
-**Foundation 01 implementada.** Revisar a direção visual da home em
-`src/features/home/HomeScreen.tsx` com o usuário e testar em iOS/Android reais.
-Paleta e medidas: `src/design-system/tokens.ts`. Componentes:
-`src/design-system/components.tsx`. Referências e regras: `docs/design-system.md`.
-Depois da revisão, evoluir o roteiro a partir dos painéis de demonstração.
+**Roteiro implementado.** Revisar `src/features/itinerary/ItineraryScreen.tsx`
+com o usuário e validar em iOS/Android reais. Home e roteiro compartilham os
+spots de exemplo em `src/features/itinerary/demo.ts`. Próximo passo: evoluir o
+detalhe de spot com dados curados e mini-mapa, antes de integrar check-in por GPS.
 
 > ⚠️ Fase 0 ainda pendente: blocos no calendário, testemunha, critério de parada.
 

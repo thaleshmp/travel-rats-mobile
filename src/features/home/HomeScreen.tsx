@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { spots, visited } from '../itinerary/demo';
 import { Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
@@ -7,27 +9,12 @@ import { Button, Label, OrbitButton, Progress, Surface, Tactile } from '../../de
 import { Icon } from '../../design-system/Icon';
 import { colors, fonts, radius, space } from '../../design-system/tokens';
 
-type Panel = 'route' | 'spots' | 'passport' | 'style' | 'city';
-const titles: Record<Panel, string> = { route: 'Seu próximo capítulo', spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera' };
-// Deliberately local fixtures: this screen is a design prototype, not live travel data.
-const spots = [
-  { name: 'Praça do Comércio', detail: 'Um começo com vista para o Tejo.', done: true },
-  { name: 'Rua Augusta', detail: 'Olha para cima. Vale a pena.', done: true },
-  { name: 'Elevador de Santa Justa', detail: 'Lisboa por outro ângulo.', done: true },
-  { name: 'Largo do Carmo', detail: 'Uma pausa no meio da aventura.', done: true },
-  { name: 'Miradouro de Santa Luzia', detail: 'Azulejos, Tejo e um belo respiro.', done: false },
-  { name: 'Castelo de São Jorge', detail: 'A cidade inteira aos seus pés.', done: false },
-  { name: 'Sé de Lisboa', detail: 'Uma viagem dentro da viagem.', done: false },
-  { name: 'Panteão Nacional', detail: 'Histórias de quem passou por aqui.', done: false },
-  { name: 'Feira da Ladra', detail: 'Tesouros para quem olha com calma.', done: false },
-  { name: 'Mosteiro dos Jerónimos', detail: 'Um encontro com a história.', done: false },
-  { name: 'Torre de Belém', detail: 'Mais um cartão-postal para a coleção.', done: false },
-  { name: 'Jardim da Estrela', detail: 'Um final debaixo das árvores.', done: false },
-];
-const visited = spots.filter((spot) => spot.done).length;
+type Panel = 'spots' | 'passport' | 'style' | 'city';
+const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera' };
 const outfits = [ { name: 'Uva', color: colors.violet }, { name: 'Floresta', color: '#397326' }, { name: 'Terracota', color: '#C16840' } ];
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [panel, setPanel] = useState<Panel | null>(null);
   const [shirt, setShirt] = useState<string>(colors.violet);
   const { width, fontScale } = useWindowDimensions();
@@ -64,7 +51,7 @@ export default function HomeScreen() {
           <Traveler size={compact ? 175 : 205} shirt={shirt} />
         </View>
         <View style={[styles.orbitLeft, compact && styles.compactOrbit]}>
-          <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => setPanel('route')} />
+          <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => router.push('/roteiro')} />
           <OrbitButton label="Passaporte" icon="passport" tone="gold" onPress={() => setPanel('passport')} />
         </View>
         <View style={[styles.orbitRight, compact && styles.compactOrbit]}>
@@ -82,7 +69,7 @@ export default function HomeScreen() {
         <View style={styles.progressLabel}><Label variant="small" style={{ fontFamily: fonts.bold }}>{visited} de {spots.length} spots</Label><Label variant="small" style={{ color: colors.greenInk }}>Só mais {spots.length - visited} para o ouro</Label></View>
         <Progress value={visited} total={spots.length} />
         <View style={styles.next}><Icon name="pin" size={17} color={colors.muted} /><Label variant="small" style={{ color: colors.muted, flex: 1 }}>Próxima parada: <Label variant="small" style={{ fontFamily: fonts.bold }}>Santa Luzia</Label></Label></View>
-        <Button onPress={() => setPanel('route')}>Continuar aventura</Button>
+        <Button onPress={() => router.push('/roteiro')}>Continuar aventura</Button>
       </Surface>
       <Label variant="small" style={styles.footer}>Vá por curiosidade. Volte com histórias.</Label>
     </ScrollView>
@@ -94,8 +81,8 @@ export default function HomeScreen() {
           <View style={styles.sheetHeader}><Label variant="eyebrow" style={{ color: colors.violet }}>TRAVEL RATS · PRÉVIA</Label><Tactile onPress={close} accessibilityLabel="Fechar" style={styles.close}><Icon name="close" size={20} /></Tactile></View>
           <ScrollView contentContainerStyle={styles.sheetContent}>
             <Label variant="heading" accessibilityRole="header">{panel ? titles[panel] : ''}</Label>
-            {(panel === 'route' || panel === 'spots') && <>
-              <Label style={styles.muted}>{panel === 'route' ? 'Lisboa, um spot de cada vez. Estes são os lugares do roteiro de exemplo.' : 'Um gostinho dos lugares que fazem parte desta aventura.'}</Label>
+            {panel === 'spots' && <>
+              <Label style={styles.muted}>Um gostinho dos lugares que fazem parte desta aventura.</Label>
               {spots.map((spot, index) => <View key={spot.name} style={styles.spotRow}>
                 <View style={[styles.spotNumber, spot.done && { backgroundColor: colors.green }]}>{spot.done ? <Icon name="check" size={19} color={colors.greenInk} /> : <Label style={{ fontFamily: fonts.bold, color: colors.violet }}>{index + 1}</Label>}</View>
                 <View style={{ flex: 1 }}><Label style={{ fontFamily: fonts.bold }}>{spot.name}</Label><Label variant="small" style={styles.muted}>{spot.detail}</Label>{spot.done && <Label variant="small" style={{ color: colors.greenInk }}>Visitado · exemplo</Label>}</View>
