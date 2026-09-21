@@ -6,6 +6,7 @@ import { spots, visited } from '../itinerary/demo';
 import { Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
+import { AnimatedTraveler } from '../../components/illustrations/AnimatedTraveler';
 import { Traveler } from '../../components/illustrations/Traveler';
 import { Button, Label, OrbitButton, Progress, Surface, Tactile } from '../../design-system/components';
 import { Icon } from '../../design-system/Icon';
@@ -50,9 +51,9 @@ export default function HomeScreen() {
             <Circle cx={43} cy={179} r={4} fill="#CBB8E8" /><Circle cx={258} cy={52} r={4} fill="#A8CC83" />
           </Svg>
         </View>
-        <View style={styles.character} accessible accessibilityLabel="Seu avatar: um ratinho viajante com os acessórios equipados">
+        <View style={styles.character}>
           <View style={styles.bubble}><Label variant="small" style={{ fontFamily: fonts.bold }}>Partiu explorar?</Label><View style={styles.bubbleTip} /></View>
-          <Traveler size={compact ? 175 : 205} {...look} />
+          <AnimatedTraveler size={compact ? 175 : 205} active={panel === null} {...look} />
         </View>
         <View style={[styles.orbitLeft, compact && styles.compactOrbit]}>
           <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => router.push('/roteiro')} />

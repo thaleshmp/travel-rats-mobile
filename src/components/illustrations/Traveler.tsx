@@ -2,7 +2,7 @@ import Svg, { Circle, Ellipse, G, Path, Rect } from 'react-native-svg';
 import { Headwear } from './Wearables';
 import { Appearance } from '../../features/shop/catalog';
 /** Original geometric traveler; vector artwork scales without image assets. */
-export function Traveler({ size = 220, shirt = '#7950D5', backpack = '#DB943A', hat = { style: 'cap', color: '#83BE52' } }: { size?: number } & Partial<Appearance>) {
+export function Traveler({ size = 220, eyesClosed = false, shirt = '#7950D5', backpack = '#DB943A', hat = { style: 'cap', color: '#83BE52' } }: { size?: number; eyesClosed?: boolean } & Partial<Appearance>) {
   return <Svg width={size} height={size * 1.18} viewBox="0 0 220 260" aria-hidden={true}>
     <Ellipse cx={111} cy={242} rx={67} ry={12} fill="#DDD3EA" opacity={0.6} />
     <Path d="M145 205c57 26 71-8 44-19" stroke="#C8A7CB" strokeWidth={12} strokeLinecap="round" fill="none" />
@@ -18,9 +18,11 @@ export function Traveler({ size = 220, shirt = '#7950D5', backpack = '#DB943A', 
     <Circle cx={60} cy={65} r={34} fill="#BFAACF" /><Circle cx={60} cy={65} r={21} fill="#EABBD0" />
     <Circle cx={156} cy={61} r={34} fill="#BFAACF" /><Circle cx={156} cy={61} r={21} fill="#EABBD0" />
     <Path d="M58 91c0-53 104-58 104 0v24c-1 39-31 53-53 53s-54-14-54-48Z" fill="#CDBBDD" />
+    {eyesClosed ? <G stroke="#302C42" strokeWidth={5} strokeLinecap="round" fill="none"><Path d="M79 102q9 7 18 0M124 102q9 7 18 0" /></G> : <>
     <Ellipse cx={88} cy={99} rx={14} ry={20} fill="white" /><Ellipse cx={133} cy={99} rx={14} ry={20} fill="white" />
     <Ellipse cx={92} cy={102} rx={6} ry={10} fill="#302C42" /><Ellipse cx={137} cy={102} rx={6} ry={10} fill="#302C42" />
     <Circle cx={94} cy={98} r={2} fill="white" /><Circle cx={139} cy={98} r={2} fill="white" />
+    </>}
     <Ellipse cx={76} cy={126} rx={12} ry={7} fill="#EDB4C8" /><Ellipse cx={145} cy={126} rx={12} ry={7} fill="#EDB4C8" />
     <Path d="M93 134q18 24 36 0" fill="#58426A" /><Path d="M103 135h15v10h-15Z" fill="white" />
     <Path d="M102 119q9-8 18 0-9 17-18 0" fill="#796087" />
