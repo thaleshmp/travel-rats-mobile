@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   checkinRow: { marginTop: space.md, transform: [{ scale: 1.25 }], shadowColor: colors.redInk, shadowOpacity: 0.35, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 6 },
   compactPlayground: { height: 'auto', paddingTop: space.lg, gap: space.lg },
   orbitArtwork: { pointerEvents: 'none', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
-  character: { alignItems: 'center', marginTop: -40 },
+  character: { alignItems: 'center', marginTop: -25 },
   bubble: { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.line, borderRadius: 13, paddingHorizontal: 13, paddingVertical: 7, marginBottom: -4, transform: [{ rotate: '-4deg' }] },
   bubbleTip: { position: 'absolute', height: 10, width: 10, backgroundColor: colors.surface, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, bottom: -6, left: 30, transform: [{ rotate: '45deg' }] },
   orbitLeft: { position: 'absolute', left: 0, top: 90, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 60, gap: 65 },
