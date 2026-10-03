@@ -36,7 +36,9 @@ export default function HomeScreen() {
 
       <View style={styles.intro}>
         <Tactile onPress={() => setPanel('city')} accessibilityLabel="Escolher cidade. Lisboa, Portugal" style={styles.cityChip}>
-          <Icon name="pin" size={15} color={colors.violet} /><Label variant="small" style={styles.cityText}>LISBOA, PORTUGAL</Label><Icon name="chevron" size={13} color={colors.violet} />
+          <View style={styles.cityChipRow}>
+            <Icon name="pin" size={15} color={colors.violet} /><Label variant="small" style={styles.cityText}>LISBOA, PORTUGAL</Label><Icon name="chevron" size={13} color={colors.violet} />
+          </View>
         </Tactile>
         <Label variant="title" accessibilityRole="header" style={styles.title}>Bora ganhar o mundo?</Label>
         <Label style={styles.subtitle}>Uma descoberta de cada vez.</Label>
@@ -130,7 +132,8 @@ const styles = StyleSheet.create({
   wordmark: { fontFamily: fonts.display, fontSize: 26, lineHeight: 40, letterSpacing: -0.8, includeFontPadding: false, textAlignVertical: 'center' },
   points: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.gold }, pointsText: { fontFamily: fonts.bold, color: colors.goldInk, fontSize: 14 },
   intro: { alignItems: 'center', marginTop: space.xl },
-  cityChip: { flexDirection: 'row', gap: 6, borderWidth: 0, borderBottomWidth: 0, minHeight: 44, paddingHorizontal: 10 },
+  cityChip: { borderWidth: 0, borderBottomWidth: 0, minHeight: 44, paddingHorizontal: 10 },
+  cityChipRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   cityText: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 1.4, color: colors.violet },
   title: { textAlign: 'center', marginTop: space.xs, fontSize: 30, lineHeight: 36 }, subtitle: { color: colors.muted, marginTop: space.xs },
   playground: { height: 400, marginTop: space.sm, justifyContent: 'center', alignItems: 'center' },
