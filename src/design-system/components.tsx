@@ -11,11 +11,11 @@ export function Tactile({ children, style, onPress, disabled, ...props }: Pressa
   return <Pressable {...props} accessibilityRole="button" disabled={disabled} accessibilityState={{ ...props.accessibilityState, disabled: disabled ?? false }} onPress={(event) => {
     if (Platform.OS !== 'web') void Haptics.selectionAsync().catch(() => undefined);
     onPress?.(event);
-  }} style={(state) => [styles.tactile, typeof style === 'function' ? style(state) : style, disabled && { opacity: 0.45 }, state.pressed && !disabled && { transform: [{ translateY: 3 }], opacity: 0.88 }]}>{children}</Pressable>;
+  }} style={(state) => [styles.tactile, typeof style === 'function' ? style(state) : style, disabled ? { opacity: 0.45 } : null, state.pressed && !disabled ? { transform: [{ translateY: 3 }], opacity: 0.88 } : null]}>{children}</Pressable>;
 }
 export function Button({ children, onPress, icon = 'arrow', secondary = false }: { children: string; onPress: () => void; icon?: IconName; secondary?: boolean }) {
-  return <Tactile onPress={onPress} style={[styles.button, secondary && styles.secondary]}>
-    <Label style={[styles.buttonLabel, secondary && { color: colors.violetDark }]}>{children}</Label>
+  return <Tactile onPress={onPress} style={[styles.button, secondary ? styles.secondary : null]}>
+    <Label style={[styles.buttonLabel, secondary ? { color: colors.violetDark } : null]}>{children}</Label>
     <Icon name={icon} color={secondary ? colors.violetDark : colors.surface} size={21} />
   </Tactile>;
 }

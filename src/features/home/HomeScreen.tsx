@@ -30,7 +30,7 @@ export default function HomeScreen() {
   return <SafeAreaView style={styles.screen}>
     <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <View style={styles.brand}><View style={styles.brandMark}><Icon name="route" size={21} color={colors.violet} /></View><Label style={styles.wordmark}>travel rats<Label style={{ color: colors.violet }}>.</Label></Label></View>
+        <Pressable onLongPress={() => router.push('/design')} style={styles.brand}><View style={styles.brandMark}><Icon name="route" size={21} color={colors.violet} /></View><Label style={styles.wordmark}>travel rats<Label style={{ color: colors.violet }}>.</Label></Label></Pressable>
         <View style={styles.points} accessibilityLabel={`Saldo: ${wardrobe.balance} pontos de demonstração`}><Icon name="star" color={colors.goldInk} size={16} /><Label style={styles.pointsText}>{wardrobe.balance}</Label></View>
       </View>
 
@@ -67,13 +67,11 @@ export default function HomeScreen() {
         <View style={[styles.orbitRight, compact && styles.compactOrbit]}>
           <OrbitButton label="Spots" icon="pin" tone="peach" onPress={() => setPanel('spots')} />
           <OrbitButton label="Meu estilo" icon="shirt" tone="violet" onPress={() => setPanel('style')} />
+          <OrbitButton label="Loja" icon="store" tone="peach" onPress={() => router.push('/loja')} />
         </View>
       </View>
 
-      <View style={styles.shopShortcut}>
-        <OrbitButton label="Loja" icon="store" tone="peach" onPress={() => router.push('/loja')} />
-        <View style={{ flex: 1 }}><Label style={{ fontFamily: fonts.bold }}>Seu próximo souvenir</Label><Label variant="small" style={{ color: colors.muted }}>Vista as histórias que você vive.</Label></View>
-      </View>
+
 
       <View style={styles.adventureHeading}><Label variant="eyebrow" style={{ color: colors.muted }}>SUA AVENTURA ATUAL</Label><Label variant="small" style={styles.demo}>Prévia</Label></View>
       <Surface style={styles.adventure}>
@@ -143,9 +141,8 @@ const styles = StyleSheet.create({
   character: { alignItems: 'center', marginTop: -25 },
   bubble: { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.line, borderRadius: 13, paddingHorizontal: 13, paddingVertical: 7, marginBottom: -4, transform: [{ rotate: '-4deg' }] },
   bubbleTip: { position: 'absolute', height: 10, width: 10, backgroundColor: colors.surface, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, bottom: -6, left: 30, transform: [{ rotate: '45deg' }] },
-  orbitLeft: { position: 'absolute', left: 0, top: 90, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 60, gap: 65 },
-  compactOrbit: { position: 'relative', top: 0, flexDirection: 'row', gap: space.xl },
-  shopShortcut: { flexDirection: 'row', gap: space.lg, alignItems: 'center', marginTop: space.lg, padding: space.lg, backgroundColor: colors.peach, borderColor: colors.peachEdge },
+  orbitLeft: { position: 'absolute', left: 0, top: 120, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 130, gap: 26 },
+  compactOrbit: { position: 'relative', top: 0, width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: space.lg },
   adventureHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: space.lg, marginBottom: space.md },
   demo: { fontSize: 10, color: colors.muted, backgroundColor: colors.line, borderRadius: 5, paddingHorizontal: 6 },
   adventure: { padding: space.lg }, cardHeading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.lg },
