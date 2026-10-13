@@ -1,32 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Label, Progress, Surface, Tactile } from '../../design-system/components';
+import { Button, Label, Surface, Tactile } from '../../design-system/components';
 import { Icon } from '../../design-system/Icon';
 import { colors, fonts, radius, space } from '../../design-system/tokens';
 import { Lisbon } from '../../components/illustrations/Lisbon';
 import { spots, visited } from './demo';
+import { BadgeProgress } from './BadgeProgress';
 import { ItineraryTrail } from './ItineraryTrail';
 
 type DemoSpot = (typeof spots)[number];
 
 export default function ItineraryScreen({ version = 'classic' }: { version?: 'classic' | 'trail' }) {
   const isTrail = version === 'trail';
-  const scrollRef = useRef<ScrollView>(null);
-  const didPositionTrail = useRef(false);
-  const [trailTop, setTrailTop] = useState<number | null>(null);
-  const [nextOffset, setNextOffset] = useState<number | null>(null);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [viewportHeight, setViewportHeight] = useState(0);
-
-  useEffect(() => {
-    if (!isTrail || didPositionTrail.current || trailTop === null || nextOffset === null || !viewportHeight) return;
-    const y = Math.max(0, trailTop + nextOffset - 32);
-    if (contentHeight < y + viewportHeight) return;
-    scrollRef.current?.scrollTo({ y, animated: false });
-    didPositionTrail.current = true;
-  }, [isTrail, trailTop, nextOffset, contentHeight, viewportHeight]);
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showVisited, setShowVisited] = useState(false);
@@ -59,7 +46,7 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
         <Label style={{ fontFamily: fonts.bold, fontSize: 17 }}>Meu roteiro</Label>
       </Pressable><Label variant="small" style={styles.preview}>{isTrail ? 'V2 · Prévia' : 'Prévia'}</Label>
     </View>
-    <ScrollView ref={scrollRef} onLayout={({ nativeEvent }) => setViewportHeight(nativeEvent.layout.height)} onContentSizeChange={(_, height) => setContentHeight(height)} contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
+    <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
       <View style={styles.hero}>
         <Label variant="eyebrow" style={{ color: colors.violet }}>PORTUGAL · 12 DESCOBERTAS</Label>
         <Label variant="title" accessibilityRole="header">Lisboa, lá vamos nós!</Label>
@@ -67,11 +54,7 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
         <Lisbon width={245} height={148} />
       </View>
 
-      <Surface style={styles.progressCard}>
-        <View style={styles.between}><Label style={{ fontFamily: fonts.bold }}>Seu caminho até o ouro</Label><Icon name="star" color={colors.goldInk} size={21} /></View>
-        <Progress value={visited} total={spots.length} />
-        <View style={styles.between}><Label variant="small" style={{ color: colors.greenInk }}>{visited} de {spots.length} carimbos</Label><Label variant="small" style={styles.muted}>Faltam {spots.length - visited}. Bora?</Label></View>
-      </Surface>
+      <BadgeProgress visited={visited} total={spots.length} />
 
       {!isTrail && <>
       <View style={styles.section}><Label variant="eyebrow" style={styles.muted}>01 · OS PRIMEIROS PASSOS</Label><Icon name="check" size={18} color={colors.greenInk} /></View>
@@ -83,9 +66,7 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
       {showVisited && <View style={{ marginTop: space.lg }}>{spots.slice(0, visited).map(spotCard)}</View>}
 
       </>}
-      {isTrail ? <View onLayout={({ nativeEvent }) => setTrailTop(nativeEvent.layout.y)}>
-        <ItineraryTrail onSelect={setSelected} onNextLayout={setNextOffset} />
-      </View> : <>
+      {isTrail ? <ItineraryTrail onSelect={setSelected} /> : <>
       <View style={styles.section}><Label variant="eyebrow" style={{ color: colors.violet }}>02 · LISBOA VISTA DE CIMA</Label><Label variant="small" style={styles.chapter}>Agora</Label></View>
       <Label style={styles.chapterCopy}>O melhor da subida? A vista lá de cima.</Label>
       {spots.slice(visited, 8).map((spot, index) => spotCard(spot, index + visited))}
@@ -109,7 +90,7 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
       <View style={styles.modal}>
         <Pressable style={StyleSheet.absoluteFill} accessibilityRole="button" accessibilityLabel="Fechar detalhes" onPress={close} />
         <View accessibilityViewIsModal style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, space.xl) }]}>
-          <View style={styles.between}><Label variant="eyebrow" style={{ color: colors.violet }}>LISBOA · SPOT {selected ? spots.indexOf(selected) + 1 : ''}</Label><Tactile onPress={close} accessibilityLabel="Fechar" style={styles.back}><Icon name="close" size={20} /></Tactile></View>
+          <View style={styles.between}><Label variant="eyebrow" style={{ color: colors.violet }}>LISBOA · {isTrail ? 'DESCOBERTA' : `SPOT ${selected ? spots.indexOf(selected) + 1 : ''}`}</Label><Tactile onPress={close} accessibilityLabel="Fechar" style={styles.back}><Icon name="close" size={20} /></Tactile></View>
           <ScrollView contentContainerStyle={styles.detail}>
             <View style={styles.postcard}><Lisbon width={230} height={135} /><Label variant="small" style={{ color: colors.violetDark }}>Um pedacinho de Lisboa</Label></View>
             <Label variant="heading" accessibilityRole="header">{selected?.name}</Label>
