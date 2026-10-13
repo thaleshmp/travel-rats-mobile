@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
+import Svg, { Circle, Ellipse } from 'react-native-svg';
 import { AnimatedTraveler } from '../../components/illustrations/AnimatedTraveler';
 import { Traveler } from '../../components/illustrations/Traveler';
 import { Button, Label, OrbitButton, Progress, Surface, Tactile } from '../../design-system/components';
@@ -22,13 +22,33 @@ export default function HomeScreen() {
   const { wardrobe, equipItem } = useWardrobe();
   const look = appearance(wardrobe);
   const shirt = look.shirt;
-  const { width, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const compact = width < 360 || fontScale > 1.2;
+  const [viewport, setViewport] = useState({ width, height: height - insets.top - insets.bottom });
+  const availableHeight = viewport.height;
+  const compact = viewport.width < 340 || fontScale > 1.2 || availableHeight < 620;
+  const panelHeight = Math.max(218, (availableHeight - 16) * 0.3);
+  const topHeight = Math.max(0, availableHeight - 16 - panelHeight);
+  const [stageHeight, setStageHeight] = useState(320);
+  const avatarSize = Math.max(150, Math.min((stageHeight - 80) / 1.18, (Math.min(viewport.width, 480) - 48) * 0.72));
+  const stageWidth = Math.min(viewport.width, 480) - space.xl * 2;
+  // The SVG rail and every icon share these coordinates (in layout points).
+  const orbitOutset = 24;
+  const rail = { cx: stageWidth / 2, cy: (stageHeight - 90) / 2 + 24, rx: (stageWidth - 76) / 2 + orbitOutset, ry: Math.max(0, (stageHeight - 90) / 2 + 16) };
+  const orbitActions = [
+    { label: 'Roteiro', icon: 'route', tone: 'green', angle: -145, onPress: () => router.push('/roteiro') },
+    { label: 'Passaporte', icon: 'passport', tone: 'gold', angle: 150, onPress: () => setPanel('passport') },
+    { label: 'Spots', icon: 'pin', tone: 'peach', angle: -40, onPress: () => setPanel('spots') },
+    { label: 'Meu estilo', icon: 'shirt', tone: 'violet', angle: 0, onPress: () => setPanel('style') },
+    { label: 'Loja', icon: 'store', tone: 'peach', angle: 45, onPress: () => router.push('/loja') },
+    { label: 'Check-in', icon: 'pin-check', tone: 'red', angle: 90, onPress: () => setPanel('checkin') },
+  ] as const;
   const close = () => setPanel(null);
 
   return <SafeAreaView style={styles.screen}>
-    <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
+    <View style={styles.viewport} onLayout={({ nativeEvent: { layout } }) => setViewport({ width: layout.width, height: layout.height })}>
+    <ScrollView contentContainerStyle={[styles.page, compact ? { minHeight: availableHeight } : { height: availableHeight }]} showsVerticalScrollIndicator={false} bounces={false}>
+      <View style={compact ? undefined : { height: topHeight }}>
       <View style={styles.header}>
         <Pressable onLongPress={() => router.push('/design')} style={styles.brand}><View style={styles.brandMark}><Icon name="route" size={21} color={colors.violet} /></View><Label style={styles.wordmark}>travel rats<Label style={{ color: colors.violet }}>.</Label></Label></Pressable>
         <View style={styles.points} accessibilityLabel={`Saldo: ${wardrobe.balance} pontos de demonstração`}><Icon name="star" color={colors.goldInk} size={16} /><Label style={styles.pointsText}>{wardrobe.balance}</Label></View>
@@ -44,48 +64,50 @@ export default function HomeScreen() {
         <Label style={styles.subtitle}>Uma descoberta de cada vez.</Label>
       </View>
 
-      <View style={[styles.playground, compact && styles.compactPlayground]}>
-        <View style={styles.orbitArtwork}>
-          <Svg width="100%" height="100%" viewBox="0 0 360 340" aria-hidden={true}>
-            <Circle cx={180} cy={171} r={108} fill="#F4F0FA" />
-            <Ellipse cx={180} cy={186} rx={144} ry={112} stroke="#E5DCEE" strokeWidth={2} strokeDasharray="4 9" fill="none" />
-            <Path d="m179 16 3 7 7 3-7 3-3 7-3-7-7-3 7-3ZM302 219l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z" fill="#E5BC60" />
-            <Circle cx={43} cy={179} r={4} fill="#CBB8E8" /><Circle cx={258} cy={52} r={4} fill="#A8CC83" />
+      <View onLayout={(event) => setStageHeight(event.nativeEvent.layout.height)} style={[styles.playground, compact && styles.compactPlayground]}>
+        {!compact && <View style={styles.orbitArtwork}>
+          <Svg width={stageWidth} height={stageHeight} aria-hidden={true}>
+            <Circle cx={rail.cx} cy={avatarSize * 0.65} r={avatarSize * 0.46} fill="#F4F0FA" />
+            <Ellipse cx={rail.cx} cy={rail.cy} rx={rail.rx} ry={rail.ry} stroke="#D8C9EC" strokeWidth={2} strokeDasharray="3 7" fill="none" />
           </Svg>
-        </View>
+        </View>}
         <View style={styles.character}>
-          <View style={styles.bubble}><Label variant="small" style={{ fontFamily: fonts.bold }}>Partiu explorar?</Label><View style={styles.bubbleTip} /></View>
-          <AnimatedTraveler size={compact ? 175 : 205} active={panel === null} {...look} />
-          <View style={styles.checkinRow}>
-            <OrbitButton label="Check-in" icon="pin-check" tone="red" onPress={() => setPanel('checkin')} />
-          </View>
+          {compact && <View style={styles.bubble}><Label variant="small" style={{ fontFamily: fonts.bold }}>Partiu explorar?</Label><View style={styles.bubbleTip} /></View>}
+          <AnimatedTraveler size={compact ? 190 : avatarSize} active={panel === null} {...look} />
         </View>
-        <View style={[styles.orbitLeft, compact && styles.compactOrbit]}>
-          <OrbitButton label="Roteiro" icon="route" tone="green" onPress={() => router.push('/roteiro')} />
-          <OrbitButton label="Passaporte" icon="passport" tone="gold" onPress={() => setPanel('passport')} />
-        </View>
-        <View style={[styles.orbitRight, compact && styles.compactOrbit]}>
-          <OrbitButton label="Spots" icon="pin" tone="peach" onPress={() => setPanel('spots')} />
-          <OrbitButton label="Meu estilo" icon="shirt" tone="violet" onPress={() => setPanel('style')} />
-          <OrbitButton label="Loja" icon="store" tone="peach" onPress={() => router.push('/loja')} />
+        <View pointerEvents="box-none" style={compact ? styles.compactOrbit : [StyleSheet.absoluteFill, { left: -orbitOutset, right: -orbitOutset }]}>
+          {orbitActions.map(({ angle, ...action }) => {
+            const radians = angle * Math.PI / 180;
+            return <View key={action.label} style={compact ? undefined : {
+              position: 'absolute',
+              left: orbitOutset + rail.cx + rail.rx * Math.cos(radians) - 38,
+              top: rail.cy + rail.ry * Math.sin(radians) - 24,
+            }}>
+              <OrbitButton variant="bare" compact={!compact} {...action} />
+            </View>;
+          })}
         </View>
       </View>
 
+      </View>
 
-
+      <View style={compact ? undefined : { height: panelHeight }}>
       <View style={styles.adventureHeading}><Label variant="eyebrow" style={{ color: colors.muted }}>SUA AVENTURA ATUAL</Label><Label variant="small" style={styles.demo}>Prévia</Label></View>
-      <Surface style={styles.adventure}>
+      <Surface style={[styles.adventure, !compact && styles.filledAdventure]}>
         <View style={styles.cardHeading}>
           <View style={styles.cityStamp}><Icon name="route" color={colors.violet} size={28} /></View>
-          <View style={{ flex: 1 }}><Label variant="heading">Olá, Lisboa!</Label><Label variant="small" style={{ color: colors.muted }}>O próximo carimbo está logo ali.</Label></View>
+          <View style={{ flex: 1 }}><Label variant="heading">Olá, Lisboa!</Label><Label variant="small" style={{ color: colors.muted }}>Próxima parada: Santa Luzia</Label></View>
         </View>
+        <View style={styles.progressGroup}>
         <View style={styles.progressLabel}><Label variant="small" style={{ fontFamily: fonts.bold }}>{visited} de {spots.length} spots</Label><Label variant="small" style={{ color: colors.greenInk }}>Só mais {spots.length - visited} para o ouro</Label></View>
         <Progress value={visited} total={spots.length} />
-        <View style={styles.next}><Icon name="pin" size={17} color={colors.muted} /><Label variant="small" style={{ color: colors.muted, flex: 1 }}>Próxima parada: <Label variant="small" style={{ fontFamily: fonts.bold }}>Santa Luzia</Label></Label></View>
+        </View>
+
         <Button onPress={() => router.push('/roteiro')}>Continuar aventura</Button>
       </Surface>
-      <Label variant="small" style={styles.footer}>Vá por curiosidade. Volte com histórias.</Label>
+      </View>
     </ScrollView>
+    </View>
 
     <Modal visible={panel !== null} transparent animationType="fade" onRequestClose={close}>
       <View style={styles.modalFrame}>
@@ -124,30 +146,31 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.canvas },
-  page: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingHorizontal: space.xl, paddingTop: space.lg, paddingBottom: space.xl },
+  page: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingHorizontal: space.xl, paddingTop: space.sm, paddingBottom: space.sm },
+  viewport: { flex: 1 },
+  progressGroup: { gap: space.sm },
+  filledAdventure: { flex: 1, justifyContent: 'space-between' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: space.sm },
   brand: { flexDirection: 'row', alignItems: 'center', gap: space.sm }, brandMark: { backgroundColor: colors.lavender, borderRadius: 11, padding: 8 },
   wordmark: { fontFamily: fonts.display, fontSize: 26, lineHeight: 40, letterSpacing: -0.8, includeFontPadding: false, textAlignVertical: 'center' },
   points: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.pill, backgroundColor: colors.gold }, pointsText: { fontFamily: fonts.bold, color: colors.goldInk, fontSize: 14 },
-  intro: { alignItems: 'center', marginTop: space.xl },
-  cityChip: { borderWidth: 0, borderBottomWidth: 0, minHeight: 44, paddingHorizontal: 10 },
+  intro: { alignItems: 'center', paddingTop: space.md },
+  cityChip: { borderWidth: 0, borderBottomWidth: 0, minHeight: 28, paddingHorizontal: 10 },
   cityChipRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   cityText: { fontFamily: fonts.bold, fontSize: 10, letterSpacing: 1.4, color: colors.violet },
-  title: { textAlign: 'center', marginTop: space.xs, fontSize: 30, lineHeight: 36 }, subtitle: { color: colors.muted, marginTop: space.xs },
-  playground: { height: 400, marginTop: space.sm, justifyContent: 'center', alignItems: 'center' },
-  checkinRow: { marginTop: space.md, transform: [{ scale: 1.25 }], shadowColor: colors.redInk, shadowOpacity: 0.35, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 6 },
-  compactPlayground: { height: 'auto', paddingTop: space.lg, gap: space.lg },
+  title: { textAlign: 'center', marginTop: space.xs, fontSize: 28, lineHeight: 32 }, subtitle: { color: colors.muted, marginTop: space.xs },
+  playground: { flex: 1, minHeight: 0, justifyContent: 'flex-start', alignItems: 'center' },
+  compactPlayground: { flex: undefined, height: 'auto', paddingTop: space.lg, gap: space.lg },
   orbitArtwork: { pointerEvents: 'none', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 },
-  character: { alignItems: 'center', marginTop: -25 },
+  character: { alignItems: 'center', marginTop: -10 },
   bubble: { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.line, borderRadius: 13, paddingHorizontal: 13, paddingVertical: 7, marginBottom: -4, transform: [{ rotate: '-4deg' }] },
   bubbleTip: { position: 'absolute', height: 10, width: 10, backgroundColor: colors.surface, borderRightWidth: 2, borderBottomWidth: 2, borderColor: colors.line, bottom: -6, left: 30, transform: [{ rotate: '45deg' }] },
-  orbitLeft: { position: 'absolute', left: 0, top: 120, gap: 65 }, orbitRight: { position: 'absolute', right: 0, top: 130, gap: 26 },
-  compactOrbit: { position: 'relative', top: 0, width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: space.lg },
-  adventureHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: space.lg, marginBottom: space.md },
+  compactOrbit: { position: 'relative', top: 0, transform: [], width: '100%', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: space.lg },
+  adventureHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 0, marginBottom: space.xs },
   demo: { fontSize: 10, color: colors.muted, backgroundColor: colors.line, borderRadius: 5, paddingHorizontal: 6 },
-  adventure: { padding: space.lg }, cardHeading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: space.lg },
-  cityStamp: { width: 54, height: 58, backgroundColor: colors.lavender, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.violetEdge },
-  progressLabel: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: space.xs, marginBottom: space.sm },
+  adventure: { padding: space.lg, gap: space.md }, cardHeading: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginBottom: 0 },
+  cityStamp: { width: 44, height: 44, backgroundColor: colors.lavender, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.violetEdge },
+  progressLabel: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: space.xs, marginBottom: 0 },
   next: { flexDirection: 'row', alignItems: 'center', gap: 6, marginVertical: space.lg }, footer: { color: colors.muted, textAlign: 'center', marginTop: space.xl },
   modalFrame: { flex: 1, justifyContent: 'flex-end', alignItems: 'center', backgroundColor: '#302C4266' },
   sheet: { backgroundColor: colors.canvas, width: '100%', maxWidth: 480, padding: space.xl, borderTopLeftRadius: 32, borderTopRightRadius: 32 },

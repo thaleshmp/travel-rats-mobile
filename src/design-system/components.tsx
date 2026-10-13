@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Platform, Pressable, PressableProps, StyleSheet, Text, TextProps, View, ViewProps } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { colors, fonts, radius, space, tones, Tone } from './tokens';
@@ -7,11 +7,13 @@ export function Label({ variant = 'body', style, ...props }: TextProps & { varia
   return <Text {...props} style={[styles.text, typography[variant], style]} />;
 }
 export function Surface({ style, ...props }: ViewProps) { return <View {...props} style={[styles.surface, style]} />; }
-export function Tactile({ children, style, onPress, disabled, ...props }: PressableProps & { children: ReactNode }) {
-  return <Pressable {...props} accessibilityRole="button" disabled={disabled} accessibilityState={{ ...props.accessibilityState, disabled: disabled ?? false }} onPress={(event) => {
+export function Tactile({ children, style, onPress, onPressIn, onPressOut, onHoverIn, onHoverOut, disabled, ...props }: PressableProps & { children: ReactNode }) {
+  const [pressed, setPressed] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  return <Pressable {...props} onHoverIn={(event) => { setHovered(true); onHoverIn?.(event); }} onHoverOut={(event) => { setHovered(false); onHoverOut?.(event); }} onPressIn={(event) => { setPressed(true); onPressIn?.(event); }} onPressOut={(event) => { setPressed(false); onPressOut?.(event); }} accessibilityRole="button" disabled={disabled} accessibilityState={{ ...props.accessibilityState, disabled: disabled ?? false }} onPress={(event) => {
     if (Platform.OS !== 'web') void Haptics.selectionAsync().catch(() => undefined);
     onPress?.(event);
-  }} style={(state) => [styles.tactile, typeof style === 'function' ? style(state) : style, disabled ? { opacity: 0.45 } : null, state.pressed && !disabled ? { transform: [{ translateY: 3 }], opacity: 0.88 } : null]}>{children}</Pressable>;
+  }} style={[styles.tactile, typeof style === 'function' ? style({ pressed: pressed && !disabled, hovered }) : style, disabled ? { opacity: 0.45 } : null, pressed && !disabled ? { transform: [{ translateY: 3 }], opacity: 0.88 } : null]}>{children}</Pressable>;
 }
 export function Button({ children, onPress, icon = 'arrow', secondary = false }: { children: string; onPress: () => void; icon?: IconName; secondary?: boolean }) {
   return <Tactile onPress={onPress} style={[styles.button, secondary ? styles.secondary : null]}>
@@ -19,11 +21,12 @@ export function Button({ children, onPress, icon = 'arrow', secondary = false }:
     <Icon name={icon} color={secondary ? colors.violetDark : colors.surface} size={21} />
   </Tactile>;
 }
-export function OrbitButton({ label, icon, tone, onPress }: { label: string; icon: IconName; tone: Tone; onPress: () => void }) {
+export function OrbitButton({ label, icon, tone, onPress, compact = false, variant = 'filled' }: { label: string; icon: IconName; tone: Tone; onPress: () => void; compact?: boolean; variant?: 'filled' | 'bare' }) {
   const palette = tones[tone];
-  return <Tactile onPress={onPress} accessibilityLabel={label} style={[styles.orbit, { backgroundColor: palette.fill, borderColor: palette.edge }]}>
-    <Icon name={icon} color={palette.ink} size={29} />
-    <Label variant="small" style={{ color: palette.ink, fontFamily: fonts.bold, textAlign: 'center' }}>{label}</Label>
+  const bare = variant === 'bare';
+  return <Tactile onPress={onPress} accessibilityLabel={label} style={[styles.orbit, compact ? { width: 76, minHeight: 72, gap: 4, padding: 6, borderRadius: 20 } : null, { backgroundColor: palette.fill, borderColor: palette.edge }, bare && styles.bareOrbit]}>
+    <Icon name={icon} color={palette.ink} size={bare ? 32 : compact ? 24 : 29} />
+    <Label variant="small" style={[{ color: palette.ink, fontFamily: fonts.bold, textAlign: 'center' }, bare && styles.bareOrbitLabel]}>{label}</Label>
   </Tactile>;
 }
 export function Progress({ value, total }: { value: number; total: number }) {
@@ -45,6 +48,8 @@ const styles = StyleSheet.create({
   buttonLabel: { color: colors.surface, fontFamily: fonts.bold, fontSize: 16 },
   secondary: { backgroundColor: colors.lavender, borderColor: colors.violetEdge },
   orbit: { width: 88, minHeight: 88, padding: space.sm, gap: space.sm, borderRadius: radius.lg },
+  bareOrbit: { backgroundColor: 'transparent', borderWidth: 0, borderBottomWidth: 0, paddingHorizontal: 0, gap: 6 },
+  bareOrbitLabel: { fontSize: 12, lineHeight: 18 },
   track: { width: '100%', height: 14, borderRadius: radius.pill, backgroundColor: colors.line, overflow: 'hidden' },
   fill: { height: '100%', backgroundColor: colors.progress, borderRadius: radius.pill, padding: 3 },
   shine: { height: 3, borderRadius: radius.pill, backgroundColor: '#BCE48E' },
