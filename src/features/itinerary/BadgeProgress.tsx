@@ -73,7 +73,9 @@ export function BadgeProgress({ visited, total }: { visited: number; total: numb
 
 const styles = StyleSheet.create({
   card: { padding: 16, gap: 12 },
-  milestones: { marginHorizontal: 22 },
+  // Only the last marker (100%) overflows the rail, by half a medal — so the
+  // left gutter is smaller than the right to keep the group optically centred.
+  milestones: { marginLeft: 8, marginRight: 22 },
   // Both positions use the same centre; captions sit below the rail.
   track: { position: 'absolute', left: 0, right: 0 },
   marker: { position: 'absolute', width: 44, marginLeft: -22, borderWidth: 0, borderBottomWidth: 0, paddingTop: 8, justifyContent: 'flex-start', gap: 1 },

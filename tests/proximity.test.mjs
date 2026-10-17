@@ -24,3 +24,13 @@ test('distances switch from metres to kilometres with Portuguese decimal formatt
     assert.equal(formatDistance(meters), label);
   }
 });
+
+test('mock check-in requires an unvisited spot strictly closer than 150 metres', async () => {
+  const { canCheckIn } = await import('../src/features/itinerary/proximity.ts');
+  assert.equal(canCheckIn({ done: false, distanceMeters: 149.99 }), true);
+  assert.equal(canCheckIn({ done: false, distanceMeters: 0 }), true);
+  for (const distanceMeters of [150, 151, -1, NaN, Infinity]) {
+    assert.equal(canCheckIn({ done: false, distanceMeters }), false);
+  }
+  assert.equal(canCheckIn({ done: true, distanceMeters: 20 }), false);
+});

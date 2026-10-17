@@ -18,3 +18,10 @@ export function formatDistance(meters: number) {
   const rounded = Math.round(meters / 10) * 10;
   return rounded < 1000 ? `${rounded} m` : `${(rounded / 1000).toFixed(1).replace(/\.0$/, '').replace('.', ',')} km`;
 }
+
+export const CHECK_IN_RADIUS_METERS = 150;
+
+export function canCheckIn(spot: { done: boolean; distanceMeters: number }) {
+  return !spot.done && Number.isFinite(spot.distanceMeters)
+    && spot.distanceMeters >= 0 && spot.distanceMeters < CHECK_IN_RADIUS_METERS;
+}

@@ -5,7 +5,7 @@ import { Label, Tactile } from '../../design-system/components';
 import { Icon } from '../../design-system/Icon';
 import { colors, fonts } from '../../design-system/tokens';
 import { spots, mockUserLocation } from './demo';
-import { formatDistance, orderByProximity } from './proximity';
+import { canCheckIn, formatDistance, orderByProximity } from './proximity';
 import { PortoTrailBackground } from '../../components/illustrations/PortoTrailBackground';
 
 const nearbySpots = orderByProximity(spots, mockUserLocation);
@@ -35,27 +35,46 @@ export function ItineraryTrail({ onSelect }: { onSelect: (spot: Spot) => void })
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <PortoTrailBackground width={width} height={height} rowHeight={rowHeight} count={spots.length} />
       </View>
-      {nearbySpots.map((spot, index) => <Tactile key={spot.name} onPress={() => onSelect(spot)}
-        accessibilityLabel={`${spot.name}. ${formatDistance(spot.distanceMeters)} de distância. ${spot.done ? 'Visitado. 100 pontos ganhos' : 'A explorar. 100 pontos disponíveis'}. Ver detalhes`}
+      {nearbySpots.map((spot, index) => {
+        const ready = canCheckIn(spot);
+        const fill = spot.done ? colors.green : ready ? colors.violet : colors.lavender;
+        const edge = spot.done ? colors.greenEdge : ready ? colors.violetDark : colors.violetEdge;
+        const ink = spot.done ? colors.greenInk : ready ? colors.surface : colors.violetDark;
+        return <Tactile key={spot.name} onPress={() => onSelect(spot)}
+        accessibilityLabel={`${spot.name}. ${formatDistance(spot.distanceMeters)} de distância. ${spot.done ? 'Visitado. 100 pontos ganhos' : ready ? 'Check-in disponível nesta prévia. 100 pontos disponíveis' : 'A explorar. 100 pontos disponíveis'}. Ver detalhes`}
         style={[styles.stop, { left: index % 2 === 0 ? 12 : width - size - 12, top: 20 + index * rowHeight, width: size }]}>
         <View style={[styles.node, { width: size, height: size }]}>
+          {ready && <View pointerEvents="none" style={{ position: 'absolute', left: -12, top: -12 }}>
+            <Svg width={size + 24} height={size + 24} viewBox="-12 -12 184 190" aria-hidden={true}>
+              <Path d={spotShapes[index % spotShapes.length]} fill="none" stroke="#B697EE" strokeWidth={24} opacity={0.09} />
+              <Path d={spotShapes[index % spotShapes.length]} fill="none" stroke="#B697EE" strokeWidth={16} opacity={0.16} />
+              <Path d={spotShapes[index % spotShapes.length]} fill="none" stroke="#C8AEF7" strokeWidth={8} opacity={0.45} />
+            </Svg>
+          </View>}
           <View pointerEvents="none" style={StyleSheet.absoluteFill}>
             <Svg width={size} height={size} viewBox="0 0 160 166" aria-hidden={true}>
-              <Path d={spotShapes[index % spotShapes.length]} transform="translate(0 5)" fill={spot.done ? colors.greenEdge : colors.violetEdge} stroke={spot.done ? colors.greenEdge : colors.violetEdge} strokeWidth={3} />
-              <Path d={spotShapes[index % spotShapes.length]} fill={spot.done ? colors.green : colors.lavender} stroke={spot.done ? colors.greenEdge : colors.violetEdge} strokeWidth={3} strokeLinejoin="round" />
+              <Path d={spotShapes[index % spotShapes.length]} transform="translate(0 5)" fill={edge} stroke={edge} strokeWidth={3} />
+              <Path d={spotShapes[index % spotShapes.length]} fill={fill} stroke={edge} strokeWidth={3} strokeLinejoin="round" />
+              {ready && <Path d={spotShapes[index % spotShapes.length]} transform="translate(4 4) scale(.95)" fill="none" stroke="#E1CFFF" strokeWidth={2} opacity={0.65} />}
             </Svg>
           </View>
           <View style={styles.nodeContent}>
-            <Icon name={spot.done ? 'check' : 'pin'} size={22} color={spot.done ? colors.greenInk : colors.violet} />
-            <Label style={[styles.name, spot.done && { color: colors.greenInk }]}>{spot.name}</Label>
-            <Label variant="small" style={{ color: spot.done ? colors.greenInk : colors.violetDark }}>({formatDistance(spot.distanceMeters)})</Label>
+            <Icon name={spot.done ? 'check' : ready ? 'pin-check' : 'pin'} size={22} color={ink} />
+            <Label style={[styles.name, { color: ink }]}>{spot.name}</Label>
+            <Label variant="small" style={{ color: ink }}>({formatDistance(spot.distanceMeters)})</Label>
           </View>
+          {ready && <View pointerEvents="none" style={[StyleSheet.absoluteFill, { zIndex: 2 }]}>
+            <Svg width={size} height={size} viewBox="0 0 160 166" aria-hidden={true}>
+              <Path d="m136 12 3 8 8 3-8 3-3 8-3-8-8-3 8-3ZM17 116l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#FFE5A0" stroke="#FFFEFA" strokeWidth={1} />
+            </Svg>
+          </View>}
         </View>
         <View style={styles.points}>
           <Icon name="star" size={14} color={colors.goldInk} />
           <Label variant="small" style={styles.pointsText}>{spot.done ? '+100 pontos' : '100 pontos'}</Label>
         </View>
-      </Tactile>)}
+      </Tactile>;
+      })}
     </View>
   </View>;
 }

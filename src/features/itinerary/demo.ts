@@ -16,4 +16,4 @@ export const spots = [
 export const visited = spots.filter((spot) => spot.done).length;
 
 // Approximate demo coordinates only; no device location is read.
-export const mockUserLocation = { latitude: 38.7135, longitude: -9.129 };
+export const mockUserLocation = { latitude: 38.7125, longitude: -9.1300 };
