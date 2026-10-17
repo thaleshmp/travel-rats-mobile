@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useId, useRef, useState } from 'react';
+import { Animated, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Label, Surface, Tactile } from '../../design-system/components';
@@ -14,6 +15,9 @@ type DemoSpot = (typeof spots)[number];
 
 export default function ItineraryScreen({ version = 'classic' }: { version?: 'classic' | 'trail' }) {
   const isTrail = version === 'trail';
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const fadeId = `itinerary-fade-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+  const fadeOpacity = scrollY.interpolate({ inputRange: [0, 24], outputRange: [0, 1], extrapolate: 'clamp' });
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showVisited, setShowVisited] = useState(false);
@@ -46,7 +50,10 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
         <Label style={{ fontFamily: fonts.bold, fontSize: 17 }}>Meu roteiro</Label>
       </Pressable><Label variant="small" style={styles.preview}>{isTrail ? 'V2 · Prévia' : 'Prévia'}</Label>
     </View>
-    <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
+    <View style={styles.scrollArea}>
+    <Animated.ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}
+      scrollEventThrottle={16}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: Platform.OS !== 'web' })}>
       <View style={styles.hero}>
         <Label variant="eyebrow" style={{ color: colors.violet }}>PORTUGAL · 12 DESCOBERTAS</Label>
         <Label variant="title" accessibilityRole="header">Lisboa, lá vamos nós!</Label>
@@ -84,7 +91,21 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
         <Label variant="small" style={styles.muted}>Ainda faltam {spots.length - visited} carimbos</Label>
       </Surface>
       <Label variant="small" style={styles.footer}>Roteiro e progresso de exemplo · explore no seu ritmo.</Label>
-    </ScrollView>
+    </Animated.ScrollView>
+    <Animated.View pointerEvents="none" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.headerFade, { opacity: fadeOpacity }]}>
+      <Svg width="100%" height="100%" aria-hidden={true}>
+        <Defs>
+          <LinearGradient id={fadeId} x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={colors.canvas} stopOpacity={1} />
+            <Stop offset="0.3" stopColor={colors.canvas} stopOpacity={0.9} />
+            <Stop offset="0.7" stopColor={colors.canvas} stopOpacity={0.35} />
+            <Stop offset="1" stopColor={colors.canvas} stopOpacity={0} />
+          </LinearGradient>
+        </Defs>
+        <Rect width="100%" height="100%" fill={`url(#${fadeId})`} />
+      </Svg>
+    </Animated.View>
+    </View>
 
     <Modal visible={selected !== null} transparent animationType="fade" onRequestClose={close}>
       <View style={styles.modal}>
@@ -107,6 +128,8 @@ export default function ItineraryScreen({ version = 'classic' }: { version?: 'cl
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.canvas },
+  scrollArea: { flex: 1, minHeight: 0 },
+  headerFade: { position: 'absolute', top: 0, left: 0, right: 0, height: 44, zIndex: 1 },
   header: { width: '100%', maxWidth: 480, alignSelf: 'center', paddingHorizontal: space.xl, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md },
   back: { width: 48, height: 48, backgroundColor: colors.surface, borderColor: colors.line },
   headerTitle: { flex: 1, fontFamily: fonts.bold, fontSize: 17 }, preview: { color: colors.muted, backgroundColor: colors.line, borderRadius: 6, paddingHorizontal: 8, fontSize: 11 },
