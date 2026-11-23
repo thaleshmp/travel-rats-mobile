@@ -12,8 +12,8 @@ import { spots, visited } from '../itinerary/demo';
 import { appearance } from '../shop/catalog';
 import { useWardrobe } from '../shop/WardrobeProvider';
 
-type Panel = 'spots' | 'passport' | 'style' | 'city' | 'checkin';
-const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', passport: 'Seu passaporte', style: 'Com a sua cara', city: 'O mundo te espera', checkin: 'Check-in' };
+type Panel = 'spots' | 'style' | 'city' | 'checkin';
+const titles: Record<Panel, string> = { spots: 'Pequenas grandes descobertas', style: 'Com a sua cara', city: 'O mundo te espera', checkin: 'Check-in' };
 const outfits = [ { id: 'uva', name: 'Uva', color: colors.violet }, { id: 'forest', name: 'Floresta', color: '#397326' }, { id: 'terra', name: 'Terracota', color: '#C16840' } ];
 
 export default function HomeScreen() {
@@ -37,7 +37,7 @@ export default function HomeScreen() {
   const rail = { cx: stageWidth / 2, cy: (stageHeight - 90) / 2 + 24, rx: (stageWidth - 76) / 2 + orbitOutset, ry: Math.max(0, (stageHeight - 90) / 2 + 16) };
   const orbitActions = [
     { label: 'Roteiro', icon: 'route', tone: 'green', angle: -145, onPress: () => router.push('/roteiro') },
-    { label: 'Passaporte', icon: 'passport', tone: 'gold', angle: 150, onPress: () => setPanel('passport') },
+    { label: 'Passaporte', icon: 'passport', tone: 'gold', angle: 150, onPress: () => router.push('/passaporte') },
     { label: 'Spots', icon: 'pin', tone: 'peach', angle: -40, onPress: () => setPanel('spots') },
     { label: 'Meu estilo', icon: 'shirt', tone: 'violet', angle: 0, onPress: () => setPanel('style') },
     { label: 'Loja', icon: 'store', tone: 'peach', angle: 45, onPress: () => router.push('/loja') },
@@ -122,11 +122,6 @@ export default function HomeScreen() {
                 <View style={[styles.spotNumber, spot.done && { backgroundColor: colors.green }]}>{spot.done ? <Icon name="check" size={19} color={colors.greenInk} /> : <Label style={{ fontFamily: fonts.bold, color: colors.violet }}>{index + 1}</Label>}</View>
                 <View style={{ flex: 1 }}><Label style={{ fontFamily: fonts.bold }}>{spot.name}</Label><Label variant="small" style={styles.muted}>{spot.detail}</Label>{spot.done && <Label variant="small" style={{ color: colors.greenInk }}>Visitado · exemplo</Label>}</View>
               </View>)}
-            </>}
-            {panel === 'passport' && <>
-              <Label style={styles.muted}>Cada lugar visitado vira parte da sua história.</Label>
-              <Surface style={{ alignItems: 'center', gap: space.md, backgroundColor: colors.gold }}><Icon name="passport" size={54} color={colors.goldInk} /><Label variant="heading">Lisboa · medalha de prata</Label><Label style={{ textAlign: 'center' }}>{visited} spots visitados · 400 pontos</Label><Progress value={visited} total={spots.length} /><Label variant="small">Complete os 12 spots para conquistar o ouro.</Label></Surface>
-              <Label variant="small" style={styles.muted}>Conquistas de exemplo para explorar o visual do passaporte.</Label>
             </>}
             {panel === 'style' && <>
               <Label style={styles.muted}>Escolha a camiseta do seu companheiro de viagem.</Label>
